@@ -1,0 +1,361 @@
+/*!* General Reset *!*/
+/**,*/
+/**::before,*/
+/**::after {*/
+/*    box-sizing: border-box;*/
+/*}*/
+
+/*body {*/
+/*    font-family: Arial, sans-serif;*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*    overflow-x: hidden; !* Prevent horizontal scrolling *!*/
+/*    width: 100%;*/
+/*    min-height: 100vh;*/
+/*}*/
+
+/*!* Viewport Meta Tag for proper scaling *!*/
+/*@viewport {*/
+/*    width: device-width;*/
+/*}*/
+
+/*!* Header Style *!*/
+/*.header-container {*/
+/*    margin: 4px;*/
+/*    border-radius: 20px;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: space-between;*/
+/*    background-color: #5f6d5f;*/
+/*    padding: 20px;*/
+/*    width: 100%;*/
+/*}*/
+
+/*.logo-title {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*}*/
+
+/*.logo-title img {*/
+/*    width: 50px;*/
+/*    height: auto;*/
+/*}*/
+
+/*.logo-title h1 {*/
+/*    margin: 0;*/
+/*    color: #ddd;*/
+/*    font-size: 24px;*/
+/*}*/
+
+/*.nav-links {*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*    flex-grow: 1;*/
+/*}*/
+
+/*.nav-links a {*/
+/*    text-decoration: none;*/
+/*    color: #ffffff;*/
+/*    font-size: 18px;*/
+/*    margin: 0 10px;*/
+/*}*/
+
+/*.log-in-button {*/
+/*    background-color: #4f5153;*/
+/*    color: white;*/
+/*    border: none;*/
+/*    padding: 10px 20px;*/
+/*    font-size: 16px;*/
+/*    cursor: pointer;*/
+/*    border-radius: 5px;*/
+/*}*/
+
+/*.log-in-button:hover {*/
+/*    background-color: #2d3f53;*/
+/*}*/
+
+/*!* Hero Section *!*/
+/*.hero-section {*/
+/*    background-image: url(../assets/attenaifullimg.jpg);*/
+/*    background-size: cover;*/
+/*    background-position: center;*/
+/*    background-repeat: no-repeat;*/
+/*    color: rgb(0, 0, 0);*/
+/*    text-align: center;*/
+/*    padding: 100px 20px;*/
+/*    min-height: 490px;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    width: 100%;*/
+/*}*/
+
+/*!* About Us Section *!*/
+/*.about-us-section {*/
+/*    margin-top: 10px;*/
+/*    margin: 4px;*/
+/*    border-radius: 20px;*/
+/*    background-color: #183a3b;*/
+/*    color: #fff;*/
+/*    padding: 40px;*/
+/*    text-align: center;*/
+/*    width: 100%;*/
+/*}*/
+
+/*.about-us-section h2 {*/
+/*    font-size: 30px;*/
+/*    color: #ffcc00;*/
+/*}*/
+
+/*.about-us-section p {*/
+/*    font-size: 18px;*/
+/*    line-height: 1.6;*/
+/*}*/
+
+/*!* About Us Slider *!*/
+/*.about-us-slider {*/
+/*    margin-top: 30px;*/
+/*}*/
+
+/*.about-us-slider img {*/
+/*    width: 100%;*/
+/*    height: auto;*/
+/*    border-radius: 10px;*/
+/*    transition: opacity 1s ease;*/
+/*    display: none;*/
+/*}*/
+
+/*.about-us-slider img.active {*/
+/*    display: block;*/
+/*}*/
+
+/*!* Our Services Section *!*/
+/*.my-services-section {*/
+/*    margin-top: 10px;*/
+/*    margin: 4px;*/
+/*    border-radius: 20px;*/
+/*    background-color: #183a3b;*/
+/*    color: #fff;*/
+/*    padding: 40px;*/
+/*    text-align: center;*/
+/*    width: 100%;*/
+/*}*/
+
+/*.services-grid {*/
+/*    display: flex;*/
+/*    flex-wrap: wrap;*/
+/*    justify-content: center;*/
+/*    gap: 20px;*/
+/*}*/
+
+/*.service-item {*/
+/*    background-color: #2f3e40;*/
+/*    padding: 20px;*/
+/*    border-radius: 10px;*/
+/*    width: 250px;*/
+/*    text-align: center;*/
+/*}*/
+
+/*.service-item img {*/
+/*    width: 100%;*/
+/*    height: auto;*/
+/*    border-radius: 10px;*/
+/*}*/
+
+/*.service-item h3 {*/
+/*    font-size: 24px;*/
+/*    color: #ffcc00;*/
+/*}*/
+
+/*.service-item p {*/
+/*    font-size: 16px;*/
+/*    line-height: 1.5;*/
+/*    margin-top: 10px;*/
+/*}*/
+
+/*!* Pricing Section *!*/
+/*.pricing-section {*/
+/*    margin-top: 10px;*/
+/*    margin: 4px;*/
+/*    border-radius: 20px;*/
+/*    background-color: #183a3b;*/
+/*    color: #fff;*/
+/*    padding: 40px;*/
+/*    text-align: center;*/
+/*    width: 100%;*/
+/*}*/
+
+/*.plans-grid {*/
+/*    display: flex;*/
+/*    flex-wrap: wrap;*/
+/*    justify-content: center;*/
+/*    gap: 20px;*/
+/*}*/
+
+/*.plan-card {*/
+/*    background-color: #2f3e40;*/
+/*    padding: 30px;*/
+/*    border-radius: 10px;*/
+/*    width: 250px;*/
+/*    text-align: center;*/
+/*}*/
+
+/*.plan-card h3 {*/
+/*    font-size: 24px;*/
+/*    color: #ffcc00;*/
+/*}*/
+
+/*.plan-card p {*/
+/*    font-size: 16px;*/
+/*    margin-top: 10px;*/
+/*}*/
+
+/*.plan-card ul {*/
+/*    text-align: left;*/
+/*    list-style-type: none;*/
+/*    padding-left: 20px;*/
+/*}*/
+
+/*.plan-price {*/
+/*    font-size: 18px;*/
+/*    color: #FFD700;*/
+/*    font-weight: bold;*/
+/*    margin-top: 15px;*/
+/*}*/
+
+/*.subscribe-button {*/
+/*    background-color: #4f5153;*/
+/*    color: white;*/
+/*    border: none;*/
+/*    padding: 10px 20px;*/
+/*    font-size: 16px;*/
+/*    cursor: pointer;*/
+/*    border-radius: 5px;*/
+/*    margin-top: 20px;*/
+/*}*/
+
+/*.subscribe-button:hover {*/
+/*    background-color: #2d3f53;*/
+/*}*/
+
+/*!* Contact Us Section *!*/
+/*.contact-us-section {*/
+/*    margin-top: 10px;*/
+/*    margin: 4px;*/
+/*    border-radius: 20px;*/
+/*    background-color: #183a3b;*/
+/*    color: #fff;*/
+/*    padding: 40px;*/
+/*    text-align: center;*/
+/*    width: 100%;*/
+/*}*/
+
+/*.contact-form {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    align-items: center;*/
+/*}*/
+
+/*.form-group {*/
+/*    margin-bottom: 20px;*/
+/*    width: 100%;*/
+/*    max-width: 500px;*/
+/*}*/
+
+/*.form-group label {*/
+/*    font-size: 18px;*/
+/*    color: #ffcc00;*/
+/*    margin-bottom: 5px;*/
+/*}*/
+
+/*.form-group input, .form-group textarea {*/
+/*    width: 100%;*/
+/*    padding: 10px;*/
+/*    border-radius: 5px;*/
+/*    border: 1px solid #ddd;*/
+/*    font-size: 16px;*/
+/*}*/
+
+/*.submit-button {*/
+/*    background-color: #4f5153;*/
+/*    color: white;*/
+/*    border: none;*/
+/*    padding: 10px 20px;*/
+/*    font-size: 16px;*/
+/*    cursor: pointer;*/
+/*    border-radius: 5px;*/
+/*    margin-top: 20px;*/
+/*}*/
+
+/*.submit-button:hover {*/
+/*    background-color: #2d3f53;*/
+/*}*/
+
+/*!* Footer *!*/
+/*.footer-content {*/
+/*    background-color: #5f6d5f;*/
+/*    text-align: center;*/
+/*    margin: 4px;*/
+/*    border-radius: 20px;*/
+/*    padding: 15px 10px;*/
+/*    width: 100%;*/
+/*}*/
+
+/*.footer-content p {*/
+/*    color: #fff;*/
+/*}*/
+
+/*.footer-content .text-primary {*/
+/*    color: #ffcc00;*/
+/*}*/
+
+/*!* Media Queries for Responsiveness *!*/
+/*@media (max-width: 768px) {*/
+/*    .header-container {*/
+/*        flex-direction: column;*/
+/*        align-items: center;*/
+/*    }*/
+
+/*    .nav-links {*/
+/*        flex-direction: column;*/
+/*        align-items: center;*/
+/*        gap: 10px;*/
+/*    }*/
+
+/*    .service-item, .plan-card {*/
+/*        width: 100%;*/
+/*        max-width: 300px;*/
+/*    }*/
+
+/*    .pricing-section, .about-us-section, .contact-us-section {*/
+/*        padding: 20px;*/
+/*    }*/
+
+/*    .services-grid, .plans-grid {*/
+/*        flex-direction: column;*/
+/*        align-items: center;*/
+/*        gap: 10px;*/
+/*    }*/
+/*}*/
+
+/*@media (max-width: 480px) {*/
+/*    .hero-section {*/
+/*        padding: 50px 10px;*/
+/*    }*/
+
+/*    .about-us-section h2 {*/
+/*        font-size: 24px;*/
+/*    }*/
+
+/*    .service-item h3, .plan-card h3 {*/
+/*        font-size: 20px;*/
+/*    }*/
+
+/*    .plan-price {*/
+/*        font-size: 16px;*/
+/*    }*/
+
+/*    .logo-title h1 {*/
+/*        font-size: 20px;*/
+/*    }*/
+/*}*/

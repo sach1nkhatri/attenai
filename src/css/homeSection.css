@@ -1,0 +1,32 @@
+.hero-section {
+    background-image: url(../assets/attenaifullimg.jpg); /* Replace with your image URL */
+    background-size: 2272px 816px; /* Set the exact width and height for the background image */
+    background-position: center;
+    background-repeat: no-repeat;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    padding: 0; /* Remove extra padding */
+    height: 816px; /* Set the height to 816px */
+    width: 1920px; /* Set the width to 2272px */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px; /* Adjust this value to create space below the header */
+}
+
+.hero-content {
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.hero-content h1 {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.hero-content p {
+    font-size: 20px;
+}
