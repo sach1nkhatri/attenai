@@ -1,0 +1,98 @@
+* {
+    box-sizing: border-box; /* Ensure padding and border are included in the element's width/height */
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    scroll-behavior: smooth; /* Enable smooth scrolling for anchor links */
+}
+
+.header-container {
+    margin: 0;
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #5F6D5F;
+    position: fixed;
+    top: 0;
+    width: 100%; /* Ensure full width */
+    z-index: 1000; /* Keep the header above other content */
+    left: 0; /* Ensure it's aligned to the left side */
+    right: 0; /* Prevent overflow on the right side */
+    overflow: hidden; /* Prevent any overflow */
+}
+
+.logo-title {
+    display: flex;
+    align-items: center;
+}
+
+.logo-title img {
+    width: 50px;
+    height: auto;
+}
+
+.logo-title h1 {
+    margin: 0;
+    color: #ddd;
+    font-size: 24px;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center; /* Align links to the left */
+    flex-grow: 1;
+    margin-left: 20px; /* Add some space from the left */
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 18px;
+    margin: 0 15px; /* Adjust the margin to bring the links closer */
+}
+
+.log-in-button {
+    background-color: #4f5153;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.log-in-button:hover {
+    background-color: #2d3f53;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .header-container {
+        padding: 10px;
+        flex-direction: column; /* Stack logo, nav, and button vertically */
+        text-align: center;
+    }
+
+    .logo-title {
+        margin-bottom: 10px; /* Add some space below the logo */
+    }
+
+    .nav-links {
+        margin-left: 0;
+        margin-bottom: 10px; /* Add space between navigation and button */
+    }
+
+    .nav-links a {
+        margin: 0 10px; /* Reduce space between nav links */
+        font-size: 16px; /* Adjust font size */
+    }
+
+    .log-in-button {
+        margin-top: 10px; /* Add space on top of the button */
+    }
+}

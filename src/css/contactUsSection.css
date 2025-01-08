@@ -1,0 +1,78 @@
+.contact-us-section {
+    height: auto;
+    background-color: #76ABAE;
+    margin: 40px;
+    border-radius: 20px;
+    color: #fff;
+}
+
+.contact-us-section .section-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-content: end;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.contact-us-section .section-container .contact-info {
+    flex: 1;
+    text-align: right;
+}
+
+.contact-us-section .section-container .contact-info h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.contact-us-section .section-container .contact-info p {
+    font-size: 20px;
+    margin-bottom: 40px;
+}
+
+.contact-us-section .section-container .contact-form {
+    flex: 1;
+    max-width: 600px;
+    background: #76ABAE;
+    padding: 40px;
+    border-radius: 10px;
+}
+
+.contact-us-section .section-container .contact-form .form-group label {
+    color: #fff;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.contact-us-section .section-container .contact-form .form-group input,
+.contact-us-section .section-container .contact-form .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    background-color: #50727B;
+    border: 1px solid #50727B;
+    color: #fff;
+    border-radius: 5px;
+    transition: border-color 0.3s ease-in-out;
+}
+
+.contact-us-section .section-container .contact-form .form-group input:focus,
+.contact-us-section .section-container .contact-form .form-group textarea:focus {
+    border-color: #fff;
+}
+
+.contact-us-section .section-container .contact-form .submit-button {
+    background-color: #6a0dad;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 14px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.contact-us-section .section-container .contact-form .submit-button:hover {
+    background-color: #4f0a80;
+}
