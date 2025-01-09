@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../attenai.iml" filepath="$PROJECT_DIR$/../attenai.iml" />
-      <module fileurl="file://$PROJECT_DIR$/backend_attenai/backend_attenai.iml" filepath="$PROJECT_DIR$/backend_attenai/backend_attenai.iml" />
     </modules>
   </component>
 </project>
