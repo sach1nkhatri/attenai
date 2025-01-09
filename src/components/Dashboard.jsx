@@ -1,109 +1,28 @@
-import React, { useRef, useEffect } from 'react';
-import '../css/Dashboard.css';
+import React, { useState } from "react";
+import ClientHeader from "../components/clientHeader"; // Import ClientHeader
+import DashboardSidebar from "../components/DashboardSidebar"; // Import Sidebar component
+import CameraFeed from "../components/CameraFeed"; // Import CameraFeed
+import "../css/Dashboard.css"; // Import dashboard styles
 
 const Dashboard = () => {
-    const videoRef = useRef(null);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Track sidebar state
 
-    useEffect(() => {
-        // Access the user's webcam
-        const startWebcam = async () => {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                }
-            } catch (error) {
-                console.error('Error accessing the webcam:', error);
-            }
-        };
-
-        startWebcam();
-
-        return () => {
-            // Cleanup: Stop all video streams
-            if (videoRef.current && videoRef.current.srcObject) {
-                const tracks = videoRef.current.srcObject.getTracks();
-                tracks.forEach(track => track.stop());
-            }
-        };
-    }, []);
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen); // Toggle the sidebar
+    };
 
     return (
-        <div className="dashboard-container">
-            <header className="dashboard-header">
-                <h1>Bad Boy Detector</h1>
-            </header>
-
-            <div className="dashboard-main-body">
-                <aside className="dashboard-sidebar">
-                    <h2>Details</h2>
-                    <div className="dashboard-selected-person">Selected Person</div>
-                    <div className="dashboard-input-group">
-                        <label>Name</label>
-                        <input type="text" />
+        <div>
+            <ClientHeader toggleSidebar={toggleSidebar} />
+            <div className="dashboard-main-body" style={{ marginTop: "100px" }}> {/* Offset for fixed header */}
+                {isSidebarOpen && <DashboardSidebar />} {/* Conditionally render sidebar */}
+                <section className="dashboard-content">
+                    <h2>Dashboard</h2>
+                    <div className="camera-feed">
+                        <CameraFeed />
                     </div>
-                    <div className="dashboard-input-group">
-                        <label>Age</label>
-                        <input type="text" />
-                    </div>
-                    <div className="dashboard-input-group">
-                        <label>Address</label>
-                        <input type="text" />
-                    </div>
-                    <div className="dashboard-input-group">
-                        <label>Class</label>
-                        <input type="text" />
-                    </div>
-                    <div className="dashboard-buttons">
-                        <button>Delete</button>
-                        <button>Update</button>
-                    </div>
-                    <nav className="dashboard-menu">
-                        <button>Attendance</button>
-                        <button>Unidentified Users</button>
-                        <button>Student Details</button>
-                        <button>Add Schedule</button>
-                        <button>Settings</button>
-                    </nav>
-                </aside>
-
-                <main className="dashboard-main-content">
-                    <div className="dashboard-camera-feed">
-                        <video ref={videoRef} autoPlay playsInline className="dashboard-webcam-feed"></video>
-                    </div>
-                    <div className="dashboard-camera-controls">Camera Controls</div>
-                    <div className="dashboard-persons">
-                        <div className="dashboard-person-card">
-                            <h3>Person 1</h3>
-                            <p>Name</p>
-                            <p>Age</p>
-                            <p>Address</p>
-                            <p>Class</p>
-                            <p>Time</p>
-                        </div>
-                        <div className="dashboard-person-card">
-                            <h3>Person 2</h3>
-                            <p>Name</p>
-                            <p>Age</p>
-                            <p>Address</p>
-                            <p>Class</p>
-                            <p>Time</p>
-                        </div>
-                        <div className="dashboard-person-card">
-                            <h3>Person 3</h3>
-                            <p>Name</p>
-                            <p>Age</p>
-                            <p>Address</p>
-                            <p>Class</p>
-                            <p>Time</p>
-                        </div>
-                    </div>
-                </main>
+                </section>
             </div>
-
-            <footer className="dashboard-footer">
-                <p>&copy; 2024 Bad Boy Detector. All rights reserved.</p>
-            </footer>
         </div>
     );
 };
