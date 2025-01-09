@@ -18,7 +18,7 @@ body, html {
     justify-content: space-between;
     background-color: #5F6D5F;
     position: fixed;
-    top: 0;
+    top: 2px;
     width: 100%; /* Ensure full width */
     z-index: 1000; /* Keep the header above other content */
     left: 0; /* Ensure it's aligned to the left side */
