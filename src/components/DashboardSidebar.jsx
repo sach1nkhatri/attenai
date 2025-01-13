@@ -1,5 +1,6 @@
 import React from "react";
-import "../css/DashboardSidebar.css"; // Import the sidebar CSS file if needed
+import { Link } from "react-router-dom";
+import "../css/DashboardSidebar.css";
 
 const DashboardSidebar = () => {
     return (
@@ -30,7 +31,9 @@ const DashboardSidebar = () => {
                 <button>Attendance</button>
                 <button>Unidentified Users</button>
                 <button>Student Details</button>
-                <button>Add Schedule</button>
+                <Link to="/add-schedule">
+                    <button>Add Schedule</button>
+                </Link>
                 <button>Settings</button>
             </nav>
         </aside>
