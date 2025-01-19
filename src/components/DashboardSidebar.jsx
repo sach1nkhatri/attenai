@@ -28,7 +28,9 @@ const DashboardSidebar = () => {
                 <button>Update</button>
             </div>
             <nav className="dashboard-menu">
-                <button>Attendance</button>
+                <Link to="/attendance">
+                    <button>Attendance</button>
+                </Link>
                 <button>Unidentified Users</button>
                 <button>Student Details</button>
                 <Link to="/add-schedule">

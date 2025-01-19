@@ -12,7 +12,6 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15); /* Slightly more pronounced shadow for a larger container */
     max-width: 500px; /* Significantly increased maximum width */
-    width: 100%; /* Full width of the parent container */
     margin: 100px auto 20px; /* Adjusted top margin */
     text-align: center;
 }
