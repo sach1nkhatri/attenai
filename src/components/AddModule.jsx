@@ -5,10 +5,18 @@ const AddModule = ({ onAddSchedule }) => {
     const [module, setModule] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
-    const [workingDays, setWorkingDays] = useState('');
+    const [workingDays, setWorkingDays] = useState([]);
+
+    const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+    const handleDayChange = (day) => {
+        setWorkingDays((prev) =>
+            prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+        );
+    };
 
     const handleAddModule = () => {
-        if (module && startTime && endTime && workingDays) {
+        if (module && startTime && endTime && workingDays.length > 0) {
             onAddSchedule({
                 module,
                 startTime,
@@ -18,7 +26,7 @@ const AddModule = ({ onAddSchedule }) => {
             setModule('');
             setStartTime('');
             setEndTime('');
-            setWorkingDays('');
+            setWorkingDays([]);
         } else {
             alert('Please fill in all fields.');
         }
@@ -54,14 +62,20 @@ const AddModule = ({ onAddSchedule }) => {
                     onChange={(e) => setEndTime(e.target.value)}
                 />
             </div>
-            <div className="input-group" style={{ marginBottom: '5px', position: 'relative' }}>
+            <div className="input-group" style={{ marginBottom: '5px' }}>
                 <label className="input-label">Working Days</label>
-                <input
-                    type="date"
-                    className="input-field date-input"
-                    value={workingDays}
-                    onChange={(e) => setWorkingDays(e.target.value)}
-                />
+                <div className="days-checkbox-group">
+                    {daysOfWeek.map((day) => (
+                        <label key={day} className="day-checkbox">
+                            <input
+                                type="checkbox"
+                                checked={workingDays.includes(day)}
+                                onChange={() => handleDayChange(day)}
+                            />
+                            {day}
+                        </label>
+                    ))}
+                </div>
             </div>
             <button className="add-btn" onClick={handleAddModule}>
                 Add Module
