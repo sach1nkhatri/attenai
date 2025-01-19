@@ -1,0 +1,80 @@
+.modules-container {
+    margin-top: 50px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+/* Modules heading styling */
+.modules-heading {
+    margin-bottom: 20px;
+    font-size: 24px;
+    text-align: center;
+    color: #333;
+}
+
+/* Horizontal layout for schedule cards */
+.schedule-cards-horizontal {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    gap: 20px; /* Space between cards */
+    margin-top: 20px;
+}
+
+/* Shared card styling */
+.card-horizontal, /* For horizontal layout */
+.schedule-cards .card { /* For vertical layout */
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-width: 200px; /* Minimum width for responsive cards */
+    font-size: 14px;
+    text-align: left;
+}
+
+/* Parent container to hold horizontal cards */
+.card-container {
+    display: flex; /* Enables flexbox for horizontal alignment */
+    flex-wrap: wrap; /* Allows cards to wrap to the next row on smaller screens */
+    gap: 20px; /* Adds spacing between cards */
+    justify-content: flex-start; /* Aligns cards to the start of the container */
+}
+
+/* Individual card styling */
+.card-horizontal {
+    flex: 1 1 calc(25% - 20px); /* Cards take 25% width minus gap */
+    border: 1px solid #007BFF;
+    background-color: #E7F3FF;
+    color: #0056b3;
+    padding: 20px; /* Adds padding inside the cards */
+    box-sizing: border-box; /* Includes padding and border in size calculations */
+    text-align: center; /* Centers text content inside the card */
+    border-radius: 8px; /* Optional: Rounded corners for the cards */
+    transition: transform 0.3s; /* Adds a hover effect */
+}
+
+.card-horizontal:hover {
+    transform: scale(1.05); /* Slightly enlarges card on hover */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .card-horizontal {
+        flex: 1 1 calc(50% - 20px); /* Cards take 50% width on medium screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .card-horizontal {
+        flex: 1 1 100%; /* Cards take full width on small screens */
+    }
+}
+
+
+/* Center-align no modules message */
+.no-modules-text {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}

@@ -1,0 +1,183 @@
+
+.module-info-content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.module-header {
+    background-color: #f8f9fa; /* Optional: Highlight background */
+    padding: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.dashboard-main-body {
+    display: flex;
+}
+
+.main-content {
+    padding: 20px;
+    margin-bottom: 450px;
+}
+
+/* Student List Section */
+.student-container {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.student-item {
+    display: flex;
+    align-items: flex-start; /* Align items at the top for better structure */
+    justify-content: space-between;
+    padding: 15px; /* Increase padding for more space */
+    border-bottom: 1px solid #ddd;
+    background-color: #ffffff; /* Background for clarity */
+    border-radius: 8px; /* Rounded corners for a cleaner look */
+    margin-bottom: 15px; /* Increase spacing between items */
+    gap: 20px; /* Add space between the elements */
+}
+
+/* Updated Student Photo */
+.student-photo {
+    width: 70px; /* Increase size for better visibility */
+    height: 70px;
+    border-radius: 50%;
+    margin-right: 15px;
+    flex-shrink: 0; /* Prevent image from resizing */
+}
+
+/* Updated Student Details */
+.student-details {
+    flex-grow: 2; /* Let details occupy more space */
+    display: flex;
+    flex-direction: column; /* Stack details vertically */
+    row-gap: 8px; /* Add spacing between text rows */
+    font-size: 16px; /* Increase font size for readability */
+    color: #333; /* Slightly darker text color for better contrast */
+}
+
+/* Styling for Action Buttons */
+.student-actions {
+    display: flex;
+    flex-direction: column; /* Stack buttons vertically */
+    align-items: flex-end; /* Align buttons to the right */
+    gap: 10px; /* Add spacing between buttons */
+}
+
+/* Buttons Styling */
+.update-btn,
+.delete-btn {
+    padding: 8px 15px; /* Adjust padding for larger buttons */
+    font-size: 14px; /* Increase font size */
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Input Section */
+.add-btn {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.add-btn:hover {
+    opacity: 0.9;
+}
+
+/* Update Button */
+.update-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.update-btn:hover {
+    background-color: #218838;
+}
+
+/* Delete Button */
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* Modal for Adding or Updating */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 400px;
+}
+
+.modal-content input {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.save-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.save-btn:hover {
+    background-color: #218838;
+}
+
+.cancel-btn {
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background-color: #c82333;
+}
