@@ -6,6 +6,7 @@ import ServicesSection from "../components/MyServicesSection";
 import PricingSection from "../components/PricingSection";
 import ContactUsSection from "../components/ContactUsSection";
 import Footer from "../components/Footer";
+// import Attendance from "../components/Attendance";
 const BlogAttenAi = () => {
     return (
         <div>
@@ -17,6 +18,7 @@ const BlogAttenAi = () => {
                 <PricingSection />
                 <ContactUsSection />
                 <Footer />
+                {/*<Attendance/>*/}
             </main>
         </div>
     );
