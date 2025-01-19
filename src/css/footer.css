@@ -1,0 +1,12 @@
+.footer {
+    background-color: rgb(95, 109, 95);
+    color: white;
+    padding: 20px;
+    position: fixed; /* Ensures the footer stays at the bottom */
+    bottom: 0; /* Aligns the footer to the bottom */
+    left: 0; /* Ensures the footer starts from the left edge */
+    width: 100%; /* Makes the footer span the entire width of the viewport */
+    text-align: center;
+    border-radius: 0; /* Removes rounded corners to match the full-width design */
+    z-index: 10; /* Ensures it stays on top of other elements if needed */
+}

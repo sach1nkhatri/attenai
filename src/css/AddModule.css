@@ -1,0 +1,78 @@
+/* AddModule.css */
+body {
+    margin: 0;
+    padding: 60px;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9; /* Subtle background color for better contrast */
+}
+
+.container {
+    background-color: white;
+    padding: 50px; /* Larger internal spacing */
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15); /* Slightly more pronounced shadow for a larger container */
+    max-width: 500px; /* Significantly increased maximum width */
+    width: 100%; /* Full width of the parent container */
+    margin: 100px auto 20px; /* Adjusted top margin */
+    text-align: center;
+}
+
+.title {
+    font-family: 'Arial', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    text-align: left;
+    width: 100%; /* Ensure the group takes full width */
+}
+
+.input-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+    width: 150px; /* Fixed width to align all labels */
+    text-align: right;
+    margin-right: 10px; /* Space between label and input */
+}
+
+.input-field {
+    width: calc(100% - 100px); /* Increased width of input field */
+    max-width: 650px; /* Increased maximum width */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.input-field:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.add-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 25px; /* Slightly larger button for consistency */
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.add-btn:hover {
+    background-color: #0056b3;
+}
+
+.date-input {
+    padding-right: 80px; /* Space for the calendar icon */
+}
+

@@ -1,0 +1,77 @@
+/* camera-feed.css */
+
+/* Camera Feed Container */
+.camera-container {
+    display: flex;
+    justify-content: left;
+    width: 100%;
+    height: 100%;
+    margin-top: -10rem;
+    flex-direction: column;
+}
+
+video {
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    object-fit: cover;
+}
+
+/* Standard size: Default (adjust as needed) */
+.camera-container.standard video {
+    width: 80%;
+    height: auto;
+    max-width: 900px;
+}
+
+/* Half-screen size */
+.camera-container.half-screen video {
+    width: 50%;
+    height: auto;
+    max-width: 100%;
+}
+
+/* Full-screen size */
+.camera-container.full-screen video {
+    width: 100%;
+    height: 100%;
+}
+
+/* Camera Controls */
+.camera-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.control-icons {
+    margin-left: -210px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.control-icon {
+    width: 40px; /* Adjust icon size */
+    height: 40px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.control-icon:hover {
+    transform: scale(1.1); /* Slight zoom on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .camera-container.standard video {
+        width: 100%;
+    }
+
+    .camera-container.half-screen video {
+        width: 75%;
+    }
+
+    .camera-container.full-screen video {
+        width: 100%;
+    }
+}
