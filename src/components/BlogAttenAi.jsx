@@ -6,20 +6,16 @@ import ServicesSection from "../components/MyServicesSection";
 import PricingSection from "../components/PricingSection";
 import ContactUsSection from "../components/ContactUsSection";
 import Footer from "../components/Footer";
-// import Attendance from "../components/Attendance";
 const BlogAttenAi = () => {
     return (
         <div>
             <Header />
-            <main style={{ marginTop: "100px" }}> {/* Offset for fixed header */}
                 <HomeSection />
                 <AboutUsSection />
                 <ServicesSection />
                 <PricingSection />
                 <ContactUsSection />
                 <Footer />
-                {/*<Attendance/>*/}
-            </main>
         </div>
     );
 };

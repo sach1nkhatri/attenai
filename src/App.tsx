@@ -8,6 +8,7 @@ import ModuleInfo from './components/Moduleinfo';
 import RegisterUser from './components/RegisterUser';
 import Attendance from './components/Attendance';
 import Settings from './components/settings';
+import PrivateRoute from './components/ProvateRoute'; // Import the PrivateRoute
 import "./App.css";
 
 const App = () => {
@@ -16,12 +17,12 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<BlogAttenai />} /> {/* Default route to BlogAttenai */}
                 <Route path="/login" element={<Login />} /> {/* Login route */}
-                <Route path="/dashboard" element={<Dashboard />} /> {/* Dashboard route */}
-                <Route path="/add-schedule" element={<AddSchedule/>} /> {/* Add Schedule route */}
-                <Route path="/moduleinfo" element={<ModuleInfo />} />
-                <Route path="/register" element={<RegisterUser />} />
-                <Route path="/Attendance" element={<Attendance />} />
-                <Route path="/settings" element={<Settings />} />
+                <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} /> {/* Dashboard route */}
+                <Route path="/add-schedule" element={<PrivateRoute element={<AddSchedule />} />} /> {/* Add Schedule route */}
+                <Route path="/moduleinfo" element={<PrivateRoute element={<ModuleInfo />} />} />
+                <Route path="/register" element={<PrivateRoute element={<RegisterUser />} />} />
+                <Route path="/Attendance" element={<PrivateRoute element={<Attendance />} />} />
+                <Route path="/settings" element={<PrivateRoute element={<Settings />} />} />
             </Routes>
         </Router>
     );

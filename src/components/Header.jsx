@@ -1,13 +1,19 @@
-import React from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import "../css/Header.css"; // Import the CSS file
-import attenailogo from "../assets/attenailogo1.png"; // Import the logo image
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../css/Header.css';
+import attenailogo from '../assets/attenailogo1.png';
 
-const Header = () => {
-    const navigate = useNavigate(); // Initialize useNavigate
+function Header() {
+    const [isFormVisible, setIsFormVisible] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const navigate = useNavigate(); // Initialize navigation
+
+    const openForm = () => setIsFormVisible(true);
+    const closeForm = () => setIsFormVisible(false);
+    const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
 
     const handleLoginClick = () => {
-        navigate("/login"); // Navigate to the Login page
+        navigate('/login'); // Navigate to the login page
     };
 
     return (
@@ -16,18 +22,19 @@ const Header = () => {
                 <img src={attenailogo} alt="AttenAi" />
                 <h1>AttenAi</h1>
             </div>
-            <nav className="nav-links">
-                <a href="#home">Home</a>
-                <a href="#about-us">About Us</a>
-                <a href="#my-services">Our Services</a>
-                <a href="#pricing">Plans</a>
-                <a href="#contact-us">Contact Us</a>
+            <div className="mobile-menu-icon" onClick={toggleMobileMenu}>
+                ☰ {/* Hamburger icon */}
+            </div>
+            <nav className={`nav-links ${mobileMenuOpen ? 'open' : ''}`}>
+                <a href="#home" onClick={toggleMobileMenu}>Home</a>
+                <a href="#about-us" onClick={toggleMobileMenu}>About Us</a>
+                <a href="#my-services" onClick={toggleMobileMenu}>Our Services</a>
+                <a href="#pricing" onClick={toggleMobileMenu}>Plans</a>
+                <a href="#contact-us" onClick={toggleMobileMenu}>Contact Us</a>
             </nav>
-            <button className="log-in-button" onClick={handleLoginClick}>
-                Client Area
-            </button>
+            <button className="Log-in-button" onClick={handleLoginClick}>Login</button>
         </header>
     );
-};
+}
 
 export default Header;
