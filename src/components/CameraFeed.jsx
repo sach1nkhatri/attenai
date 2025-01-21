@@ -1,110 +1,80 @@
-import React, { useState, useRef, useEffect } from "react";
-import "../css/CameraFeed.css"; // Import the CSS file
-
-// Import images for camera controls
-import playPauseIcon from "../assets/playpause.png";
-import fullscreenIcon from "../assets/fullscreen.png";
-import standardScreenIcon from "../assets/standardscreen.png";
+import React, { useState, useEffect, useRef } from "react";
+import Webcam from "react-webcam";
+import * as faceapi from "face-api.js";
+import UserCard from "./UserCard";
+import "../css/CameraFeed.css";
+import axios from "axios";
 
 const CameraFeed = () => {
-    const videoRef = useRef(null);
-    const [isPlaying, setIsPlaying] = useState(true);
-    const [isFullscreen, setIsFullscreen] = useState(false);
-    const [videoSize, setVideoSize] = useState("standard"); // State to track video size
+    const [user, setUser] = useState(null); // State for the latest recognized user
+    const [status, setStatus] = useState("Waiting for recognition...");
+    const [capturedImage, setCapturedImage] = useState(null); // Captured image for the user card
+    const webcamRef = useRef(null);
 
+    // Load face-api.js models
     useEffect(() => {
-        const startWebcam = async () => {
+        const loadModels = async () => {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                }
+                await faceapi.nets.tinyFaceDetector.loadFromUri("/models");
+                setStatus("Models loaded. Ready for recognition.");
             } catch (error) {
-                console.error('Error accessing the webcam:', error);
+                console.error("Error loading models:", error);
+                setStatus("Failed to load face recognition models.");
             }
         };
 
-        startWebcam();
-
-        return () => {
-            if (videoRef.current && videoRef.current.srcObject) {
-                const tracks = videoRef.current.srcObject.getTracks();
-                tracks.forEach(track => track.stop());
-            }
-        };
+        loadModels();
     }, []);
 
-    const togglePlay = () => {
-        if (videoRef.current) {
-            if (isPlaying) {
-                videoRef.current.pause();
-            } else {
-                videoRef.current.play();
+    // Handle capturing an image and recognizing the user
+    const handleCapture = async () => {
+        if (!webcamRef.current) return;
+
+        const imageSrc = webcamRef.current.getScreenshot(); // Capture a frame from the webcam
+        if (imageSrc) {
+            const cleanedImage = imageSrc.replace(/^data:image\/\w+;base64,/, "");
+            try {
+                const response = await axios.post("http://127.0.0.1:5000/recognize", { image: cleanedImage });
+                if (response.data.success) {
+                    if (!user || user.uid !== response.data.user.uid) {
+                        // Update user state and save the captured image
+                        setUser(response.data.user);
+                        setCapturedImage(imageSrc); // Save the captured image
+                        setStatus(`User recognized: ${response.data.user.name}`);
+                    }
+                } else {
+                    setStatus(response.data.message || "Face not recognized.");
+                }
+            } catch (error) {
+                console.error("Error recognizing face:", error);
+                setStatus("Error recognizing face.");
             }
-            setIsPlaying(!isPlaying);
         }
     };
 
-    const toggleFullscreen = () => {
-        if (videoRef.current) {
-            if (!isFullscreen) {
-                if (videoRef.current.requestFullscreen) {
-                    videoRef.current.requestFullscreen();
-                } else if (videoRef.current.mozRequestFullScreen) {
-                    videoRef.current.mozRequestFullScreen();
-                } else if (videoRef.current.webkitRequestFullscreen) {
-                    videoRef.current.webkitRequestFullscreen();
-                } else if (videoRef.current.msRequestFullscreen) {
-                    videoRef.current.msRequestFullscreen();
-                }
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
-            }
-            setIsFullscreen(!isFullscreen);
-        }
-    };
-
-    const toggleVideoSize = (size) => {
-        setVideoSize(size); // Update the video size based on the selected option
-    };
+    // Periodically capture frames for recognition
+    useEffect(() => {
+        const interval = setInterval(() => {
+            handleCapture();
+        }, 3000); // Capture every 3 seconds
+        return () => clearInterval(interval); // Cleanup interval on unmount
+    }, [user]);
 
     return (
-        <div className={`camera-container ${videoSize}`}>
-            <video ref={videoRef} width="100%" height="auto" autoPlay />
-            {/* Camera Controls */}
-            <div className="camera-controls">
-                <div className="control-icons">
-                    {/* Play/Pause */}
-                    <img
-                        src={playPauseIcon}
-                        alt="Play/Pause"
-                        onClick={togglePlay}
-                        className="control-icon"
-                    />
-                    {/* Standard size */}
-                    <img
-                        src={standardScreenIcon}
-                        alt="Standard"
-                        onClick={() => toggleVideoSize("standard")}
-                        className="control-icon"
-                    />
-                    {/* Full-screen size */}
-                    <img
-                        src={fullscreenIcon}
-                        alt="Full-Screen"
-                        onClick={() => toggleVideoSize("full-screen")}
-                        className="control-icon"
-                    />
+        <div className="camera-feed-container">
+            {/* Camera Feed */}
+            <div className="webcam-container">
+                <Webcam ref={webcamRef} screenshotFormat="image/jpeg" />
+                <div className="status-container">
+                    <p className="status">{status}</p>
                 </div>
             </div>
+            {/* User Card Below */}
+            {user && (
+                <div className="user-card-container">
+                    <UserCard user={user} capturedImage={capturedImage} />
+                </div>
+            )}
         </div>
     );
 };

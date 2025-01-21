@@ -1,77 +1,45 @@
-/* camera-feed.css */
-
-/* Camera Feed Container */
-.camera-container {
+.camera-feed-container {
     display: flex;
-    justify-content: left;
-    width: 100%;
-    height: 100%;
-    margin-top: -10rem;
-    flex-direction: column;
-}
-
-video {
-    border: 1px solid #ccc;
-    border-radius: 15px;
-    object-fit: cover;
-}
-
-/* Standard size: Default (adjust as needed) */
-.camera-container.standard video {
-    width: 80%;
-    height: auto;
-    max-width: 900px;
-}
-
-/* Half-screen size */
-.camera-container.half-screen video {
-    width: 50%;
-    height: auto;
-    max-width: 100%;
-}
-
-/* Full-screen size */
-.camera-container.full-screen video {
-    width: 100%;
-    height: 100%;
-}
-
-/* Camera Controls */
-.camera-controls {
-    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center align the content */
     justify-content: center;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 800px; /* Adjust as needed */
+}
+
+.webcam-container {
+    width: 100%;
+    margin-bottom: 20px; /* Space between webcam and user card */
+    text-align: center;
+}
+
+.status-container {
     margin-top: 10px;
+    color: #888;
+    font-size: 14px;
 }
 
-.control-icons {
-    margin-left: -210px;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
+.user-card-container {
+    width: 100%;
+    max-width: 400px; /* Adjust as needed */
 }
 
-.control-icon {
-    width: 40px; /* Adjust icon size */
-    height: 40px;
-    cursor: pointer;
-    transition: transform 0.3s ease;
+.user-card {
+    border: 1px solid #ddd;
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
-.control-icon:hover {
-    transform: scale(1.1); /* Slight zoom on hover */
+.user-card h3 {
+    margin: 10px 0;
+    font-size: 18px;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .camera-container.standard video {
-        width: 100%;
-    }
-
-    .camera-container.half-screen video {
-        width: 75%;
-    }
-
-    .camera-container.full-screen video {
-        width: 100%;
-    }
+.user-card p {
+    font-size: 14px;
+    color: #555;
 }

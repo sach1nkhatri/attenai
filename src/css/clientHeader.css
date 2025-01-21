@@ -18,7 +18,7 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: rgba(211, 32, 32, 0);
+    background-color: rgb(255, 255, 255);
     position: fixed;
     top: 2px;
     width: 100%;
