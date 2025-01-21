@@ -1,26 +1,27 @@
+// src/components/DashboardSidebar.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 import "../css/DashboardSidebar.css";
 
-const DashboardSidebar = () => {
+const DashboardSidebar = ({ isOpen, toggleSidebar }) => {
     return (
-        <aside className="dashboard-sidebar">
+        <aside className={`dashboard-sidebar ${isOpen ? "open" : ""}`}>
             <nav className="dashboard-menu">
-                <Link to="/Dashboard">
+                <Link to="/Dashboard" onClick={toggleSidebar}>
                     <button>Dashboard</button>
                 </Link>
-                <Link to="/Attendance">
-                <button>Attendance</button>
+                <Link to="/Attendance" onClick={toggleSidebar}>
+                    <button>Attendance</button>
                 </Link>
-                <Link to="/register">
-                <button>Register Users</button>
+                <Link to="/register" onClick={toggleSidebar}>
+                    <button>Register Users</button>
                 </Link>
                 <button>User Details</button>
-                <Link to="/add-schedule">
+                <Link to="/add-schedule" onClick={toggleSidebar}>
                     <button>Add Schedule</button>
                 </Link>
-                <Link to="/settings">
-                <button>Settings</button>
+                <Link to="/settings" onClick={toggleSidebar}>
+                    <button>Settings</button>
                 </Link>
             </nav>
         </aside>

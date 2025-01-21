@@ -1,3 +1,4 @@
+/* General Body Styling */
 body {
     margin: 0;
     padding: 0;
@@ -9,12 +10,15 @@ body {
     min-height: 100vh;
 }
 
-.login-container {
+/* Auth Container */
+.auth-container {
+    width: 100%;
+    max-width: 400px;
     text-align: center;
-    padding: 20px;
     animation: fadeIn 1s ease-in-out;
 }
 
+/* Headings */
 h1, h2 {
     margin: 0;
     font-weight: normal;
@@ -26,15 +30,14 @@ h2 {
 }
 
 h1 {
-    font-size: 2.5rem;
+    font-size: 2rem;
     margin-bottom: 1.5rem;
 }
 
+/* Login Box Styling */
 .login-box {
     background-color: #4f625e;
     padding: 20px;
-    width: 100%;
-    max-width: 300px;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s, box-shadow 0.3s;
@@ -45,15 +48,21 @@ h1 {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
-.icon {
-    margin-bottom: 15px;
+/* GIF Container */
+.gif-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
-.icon img {
-    width: 50px;
+.gif-container img {
+    width: 100px;
+    height: auto;
+    border-radius: 10px;
     animation: bounce 2s infinite;
 }
 
+/* Form Styling */
 form {
     display: flex;
     flex-direction: column;
@@ -74,6 +83,7 @@ input:focus {
     outline: none;
 }
 
+/* Buttons */
 button {
     padding: 10px;
     background-color: #2f3e3b;
@@ -90,6 +100,7 @@ button:hover {
     transform: translateY(-2px);
 }
 
+/* Forgot Password Link */
 .forgot-pass {
     color: #ccc;
     font-size: 0.9rem;
@@ -102,6 +113,24 @@ button:hover {
     color: #fff;
 }
 
+/* Switch Form */
+.switch-form {
+    color: #fff;
+    font-size: 0.9rem;
+    margin-top: 15px;
+}
+
+.switch-form a {
+    color: #1dc1d3;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.switch-form a:hover {
+    color: #17a2b8;
+}
+
+/* Animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -118,21 +147,4 @@ button:hover {
     50% {
         transform: translateY(-10px);
     }
-}
-.header {
-    background-color: #e0e1e5;
-    text-align: center;
-    padding: 10px 0;
-}
-
-.header h1 {
-    font-size: 2rem;
-    font-family: 'Lucida Handwriting', cursive;
-    margin: 0;
-}
-.login-footer{
-    background-color: #d3d3d3;
-    text-align: center;
-    padding: 15px 0;
-    font-size: 0.9rem;
 }

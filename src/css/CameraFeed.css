@@ -4,6 +4,7 @@
     align-items: center; /* Center align the content */
     justify-content: center;
     margin: 0 auto;
+    border-radius: 20px;
     width: 100%;
     max-width: 800px; /* Adjust as needed */
 }
@@ -11,6 +12,7 @@
 .webcam-container {
     width: 100%;
     margin-bottom: 20px; /* Space between webcam and user card */
+    border-radius: 20px;
     text-align: center;
 }
 
@@ -26,7 +28,7 @@
 }
 
 .user-card {
-    border: 1px solid #ddd;
+    border: 1px solid #f2dda4;
     background-color: #ffffff;
     padding: 15px;
     border-radius: 10px;

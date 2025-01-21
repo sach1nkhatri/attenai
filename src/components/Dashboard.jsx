@@ -1,16 +1,21 @@
-// src/components/Dashboard.jsx
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "./DashboardSidebar";
 import CameraFeed from "./CameraFeed";
-import Header from "./clientHeader";
+import ClientHeader from "./clientHeader";
 import "../css/Dashboard.css";
 
 const Dashboard = () => {
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
     return (
         <div className="dashboard">
-            <Sidebar />
-            <div className="main-content">
-                <Header />
+            <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+            <div className={`main-content ${isSidebarOpen ? "sidebar-open" : ""}`}>
+                <ClientHeader toggleSidebar={toggleSidebar} />
                 <div className="content">
                     <CameraFeed />
                 </div>

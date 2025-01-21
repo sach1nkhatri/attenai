@@ -1,20 +1,22 @@
+// src/components/clientHeader.jsx
 import React from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import "../css/clientHeader.css"; // Import the CSS file
-import attenailogo from "../assets/attenailogo1.png"; // Import the logo image
+import { useNavigate } from "react-router-dom";
+import "../css/clientHeader.css";
+import attenailogo from "../assets/attenailogo1.png";
 
 const ClientHeader = ({ toggleSidebar }) => {
-    const navigate = useNavigate(); // Initialize useNavigate
+    const navigate = useNavigate();
 
     const handleLogoutClick = () => {
-        // Perform logout actions (e.g., clearing user session)
-        navigate("/"); // Navigate to the BlogAttenai page
+        navigate("/"); // Navigate to the homepage
     };
 
     return (
         <header className="clientheader-container">
             <div className="hamburger-menu" onClick={toggleSidebar}>
-                ☰ {/* Hamburger menu icon */}
+                <div className="burger-line"></div>
+                <div className="burger-line"></div>
+                <div className="burger-line"></div>
             </div>
             <div className="clientlogo-title">
                 <img src={attenailogo} alt="AttenAi" />

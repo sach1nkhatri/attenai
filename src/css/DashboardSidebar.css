@@ -1,55 +1,25 @@
 .dashboard-sidebar {
     width: 250px;
     padding: 20px;
-    background-color: #5f6d5f;
+    background-color: #bfd7b5;
     border-right: 2px solid #ccc;
-    margin-top: 70px;
     height: 100vh;
+    margin-top: 10vh;
     position: fixed;
     top: 0;
-    left: 0;
+    left: -250px; /* Hidden by default */
+    transition: left 0.3s ease-in-out;
 }
 
-.dashboard-selected-person {
-    font-size: 18px;
-    margin-bottom: 10px;
-}
-
-.dashboard-input-group {
-    margin-bottom: 15px;
-}
-
-.dashboard-input-group label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.dashboard-input-group input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
-
-.dashboard-buttons button {
-    margin-right: 10px;
-    padding: 10px 20px;
-    background-color: #4f5153;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.dashboard-buttons button:hover {
-    background-color: #2d3f53;
+.dashboard-sidebar.open {
+    left: 0; /* Slide in when open */
 }
 
 .dashboard-menu button {
     display: block;
     width: 100%;
-    margin: 10px 0;
+    margin: 25px 0;
+    height: 50px;
     padding: 10px;
     background-color: #4f5153;
     color: white;
