@@ -6,6 +6,9 @@ const DashboardSidebar = () => {
     return (
         <aside className="dashboard-sidebar">
             <nav className="dashboard-menu">
+                <Link to="/Dashboard">
+                    <button>Dashboard</button>
+                </Link>
                 <Link to="/Attendance">
                 <button>Attendance</button>
                 </Link>
@@ -16,7 +19,9 @@ const DashboardSidebar = () => {
                 <Link to="/add-schedule">
                     <button>Add Schedule</button>
                 </Link>
+                <Link to="/settings">
                 <button>Settings</button>
+                </Link>
             </nav>
         </aside>
     );

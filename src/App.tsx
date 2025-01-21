@@ -7,6 +7,7 @@ import AddSchedule from './components/AddSchedules'; // Import the AddSchedule c
 import ModuleInfo from './components/Moduleinfo';
 import RegisterUser from './components/RegisterUser';
 import Attendance from './components/Attendance';
+import Settings from './components/settings';
 import "./App.css";
 
 const App = () => {
@@ -20,6 +21,7 @@ const App = () => {
                 <Route path="/moduleinfo" element={<ModuleInfo />} />
                 <Route path="/register" element={<RegisterUser />} />
                 <Route path="/Attendance" element={<Attendance />} />
+                <Route path="/settings" element={<Settings />} />
             </Routes>
         </Router>
     );
