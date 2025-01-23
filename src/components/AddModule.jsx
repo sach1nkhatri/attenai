@@ -6,6 +6,7 @@ const AddModule = ({ onAddSchedule }) => {
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
     const [workingDays, setWorkingDays] = useState([]);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -62,20 +63,29 @@ const AddModule = ({ onAddSchedule }) => {
                     onChange={(e) => setEndTime(e.target.value)}
                 />
             </div>
-            <div className="input-group" style={{ marginBottom: '5px' }}>
+            <div className="input-group" style={{ marginBottom: '5px', position: 'relative' }}>
                 <label className="input-label">Working Days</label>
-                <div className="days-checkbox-group">
-                    {daysOfWeek.map((day) => (
-                        <label key={day} className="day-checkbox">
-                            <input
-                                type="checkbox"
-                                checked={workingDays.includes(day)}
-                                onChange={() => handleDayChange(day)}
-                            />
-                            {day}
-                        </label>
-                    ))}
+                <div
+                    className="dropdown-menu"
+                    onClick={() => setIsDropdownOpen((prev) => !prev)}
+                >
+                    {workingDays.length > 0 ? workingDays.join(', ') : 'Select Days'}
+                    <span className="dropdown-arrow">&#9660;</span>
                 </div>
+                {isDropdownOpen && (
+                    <div className="popup">
+                        {daysOfWeek.map((day) => (
+                            <label key={day} className="day-checkbox">
+                                <input
+                                    type="checkbox"
+                                    checked={workingDays.includes(day)}
+                                    onChange={() => handleDayChange(day)}
+                                />
+                                {day}
+                            </label>
+                        ))}
+                    </div>
+                )}
             </div>
             <button className="add-btn" onClick={handleAddModule}>
                 Add Module
