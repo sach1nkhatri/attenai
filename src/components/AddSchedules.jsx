@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/clientHeader';
 import Footer from '../components/Footer';
 import DashboardSidebar from '../components/DashboardSidebar';
@@ -7,12 +7,12 @@ import AddModule from './AddModule';
 import '../css/AddSchedules.css';
 
 const AddSchedules = () => {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Set initial state to false
     const [schedules, setSchedules] = useState([]);
-    const navigate = useNavigate(); // Initialize navigate
+    const navigate = useNavigate();
 
     const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
+        setIsSidebarOpen(!isSidebarOpen); // Toggle the sidebar state
     };
 
     const addSchedule = (newSchedule) => {
@@ -20,15 +20,15 @@ const AddSchedules = () => {
     };
 
     const handleCardClick = (schedule) => {
-        navigate('/moduleinfo', { state: { schedule } }); // Navigate to ModuleInfo and pass data
+        navigate('/moduleinfo', { state: { schedule } });
     };
 
     return (
         <div className="add-schedules-container">
-            <Header toggleSidebar={toggleSidebar} />
-            <div className="dashboard-main-body">
-                {isSidebarOpen && <DashboardSidebar showDetails={false} />}
-                <div className="main-content">
+            <DashboardSidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} /> {/* Pass props */}
+            <div className={`main-content ${isSidebarOpen ? 'sidebar-open' : ''}`}> {/* Apply class */}
+                <Header toggleSidebar={toggleSidebar} />
+                <div className="main-content-inner">
                     <AddModule onAddSchedule={addSchedule} />
                     <div className="modules-container">
                         <h2 className="modules-heading">Modules</h2>
@@ -37,8 +37,8 @@ const AddSchedules = () => {
                                 <div
                                     className="card-horizontal"
                                     key={index}
-                                    onClick={() => handleCardClick(schedule)} // Handle card click
-                                    style={{ cursor: 'pointer' }} // Make cards look clickable
+                                    onClick={() => handleCardClick(schedule)}
+                                    style={{ cursor: 'pointer' }}
                                 >
                                     <p><strong>Module:</strong> {schedule.module}</p>
                                     <p><strong>Time:</strong> {schedule.startTime} - {schedule.endTime}</p>
