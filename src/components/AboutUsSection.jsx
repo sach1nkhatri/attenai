@@ -22,7 +22,7 @@ function AboutUs() {
             <div className="about-us-content">
                 <div className="about-us-text">
                     <h2>About Us</h2>
-                    <p>Learn more about ChilliesAudioWorks and our mission to provide quality music education in Kathmandu.</p>
+                    <p>AttenAI is an advanced attendance management platform designed to leverage cutting-edge AI technology for seamless face recognition and real-time attendance tracking. Built for organizations of all sizes, it offers robust solutions such as automated user recognition, detailed analytics, and secure data handling. With features like subscription-based plans, intuitive dashboards, and real-time insights, AttenAI simplifies workforce management while enhancing efficiency and accuracy. Perfect for schools, offices, and enterprises aiming for smart attendance solutions!.</p>
                 </div>
                 <div className="about-us-slider">
                     {images.map((image, index) => (

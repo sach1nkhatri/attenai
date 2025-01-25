@@ -63,7 +63,7 @@ const LoginSignUp = () => {
             {isLogin ? (
                 <div className="form-container">
                     <h2>Welcome To</h2>
-                    <h1>Bad Boy Detector</h1>
+                    <h1>AttenAi</h1>
                     <div className="login-box">
                         <div className="gif-container">
                             <img src={sinchanGif} alt="Sinchan GIF" />
