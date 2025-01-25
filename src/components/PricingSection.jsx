@@ -1,7 +1,14 @@
 import React from "react";
-import "../css/pricingSection.css"; // Import the CSS file
+import { useNavigate } from "react-router-dom"; // Assuming you are using React Router
+import "../css/pricingSection.css";
 
 const PricingSection = () => {
+    const navigate = useNavigate();
+
+    const handleSubscribe = (plan) => {
+        navigate("/billing", { state: { plan } }); // Pass selected plan details to the billing page
+    };
+
     return (
         <section id="pricing" className="pricing-section">
             <div className="section-container">
@@ -15,8 +22,10 @@ const PricingSection = () => {
                             <li>Basic Attendance Features</li>
                             <li>Email Support</li>
                         </ul>
-                        <p className="plan-price">₹500 / Month</p>
-                        <button className="subscribe-button">Subscribe</button>
+                        <p className="plan-price">रू500 / Month</p>
+                        <button className="subscribe-button" onClick={() => handleSubscribe("Basic Plan")}>
+                            Subscribe
+                        </button>
                     </div>
                     <div className="plan-card">
                         <h3>Standard Plan</h3>
@@ -26,8 +35,10 @@ const PricingSection = () => {
                             <li>Advanced Attendance Analytics</li>
                             <li>Priority Email Support</li>
                         </ul>
-                        <p className="plan-price">₹1,000 / Month</p>
-                        <button className="subscribe-button">Subscribe</button>
+                        <p className="plan-price">रू1,000 / Month</p>
+                        <button className="subscribe-button" onClick={() => handleSubscribe("Standard Plan")}>
+                            Subscribe
+                        </button>
                     </div>
                     <div className="plan-card">
                         <h3>Premium Plan</h3>
@@ -37,8 +48,10 @@ const PricingSection = () => {
                             <li>Real-Time Insights</li>
                             <li>24/7 Dedicated Support</li>
                         </ul>
-                        <p className="plan-price">₹2,000 / Month</p>
-                        <button className="subscribe-button">Subscribe</button>
+                        <p className="plan-price">रू5,000 / Month</p>
+                        <button className="subscribe-button" onClick={() => handleSubscribe("Premium Plan")}>
+                            Subscribe
+                        </button>
                     </div>
                 </div>
             </div>

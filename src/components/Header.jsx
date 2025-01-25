@@ -32,7 +32,7 @@ function Header() {
                 <a href="#pricing" onClick={toggleMobileMenu}>Plans</a>
                 <a href="#contact-us" onClick={toggleMobileMenu}>Contact Us</a>
             </nav>
-            <button className="Log-in-button" onClick={handleLoginClick}>Login</button>
+            <button className="Log-in-button" onClick={handleLoginClick}>Client Area</button>
         </header>
     );
 }

@@ -1,78 +1,53 @@
-import React, { useState, useEffect, useRef } from "react";
-import Webcam from "react-webcam";
-import * as faceapi from "face-api.js";
-import UserCard from "./UserCard";
-import "../css/CameraFeed.css";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "../css/CameraFeed.css";
 
 const CameraFeed = () => {
-    const [user, setUser] = useState(null); // State for the latest recognized user
-    const [status, setStatus] = useState("Waiting for recognition...");
-    const [capturedImage, setCapturedImage] = useState(null); // Captured image for the user card
-    const webcamRef = useRef(null);
+    const [status, setStatus] = useState("Connecting to the video feed...");
+    const [recognizedUser, setRecognizedUser] = useState(null); // Holds the recognized user data
 
-    // Load face-api.js models
-    useEffect(() => {
-        const loadModels = async () => {
-            try {
-                await faceapi.nets.tinyFaceDetector.loadFromUri("/models");
-                setStatus("Models loaded. Ready for recognition.");
-            } catch (error) {
-                console.error("Error loading models:", error);
-                setStatus("Failed to load face recognition models.");
+    // Function to fetch recognized user data periodically
+    const fetchRecognizedUser = async () => {
+        try {
+            const response = await axios.get("http://127.0.0.1:5000/recognized_user");
+            if (response.data.success) {
+                setRecognizedUser(response.data.user);
+            } else {
+                setRecognizedUser(null);
             }
-        };
-
-        loadModels();
-    }, []);
-
-    // Handle capturing an image and recognizing the user
-    const handleCapture = async () => {
-        if (!webcamRef.current) return;
-
-        const imageSrc = webcamRef.current.getScreenshot(); // Capture a frame from the webcam
-        if (imageSrc) {
-            const cleanedImage = imageSrc.replace(/^data:image\/\w+;base64,/, "");
-            try {
-                const response = await axios.post("http://127.0.0.1:5000/recognize", { image: cleanedImage });
-                if (response.data.success) {
-                    if (!user || user.uid !== response.data.user.uid) {
-                        // Update user state and save the captured image
-                        setUser(response.data.user);
-                        setCapturedImage(imageSrc); // Save the captured image
-                        setStatus(`User recognized: ${response.data.user.name}`);
-                    }
-                } else {
-                    setStatus(response.data.message || "Face not recognized.");
-                }
-            } catch (error) {
-                console.error("Error recognizing face:", error);
-                setStatus("Error recognizing face.");
-            }
+        } catch (error) {
+            console.error("Network error:", error.message);
+            setStatus("Cannot connect to backend.");
         }
     };
 
-    // Periodically capture frames for recognition
+
+    // Periodically fetch recognized user data every 3 seconds
     useEffect(() => {
-        const interval = setInterval(() => {
-            handleCapture();
-        }, 3000); // Capture every 3 seconds
-        return () => clearInterval(interval); // Cleanup interval on unmount
-    }, [user]);
+        const interval = setInterval(fetchRecognizedUser, 3000);
+        return () => clearInterval(interval); // Cleanup interval on component unmount
+    }, []);
 
     return (
         <div className="camera-feed-container">
-            {/* Camera Feed */}
-            <div className="webcam-container">
-                <Webcam ref={webcamRef} screenshotFormat="image/jpeg" />
-                <div className="status-container">
-                    <p className="status">{status}</p>
-                </div>
+            <h2>Camera Feed</h2>
+            {/* Video feed streamed from the backend */}
+            <div className="video-container">
+                <img
+                    src="http://127.0.0.1:5000/video_feed"
+                    alt="Video Stream"
+                    style={{ width: "100%", borderRadius: "10px" }}
+                />
+                <p className="status">{status}</p>
             </div>
-            {/* User Card Below */}
-            {user && (
-                <div className="user-card-container">
-                    <UserCard user={user} capturedImage={capturedImage} />
+
+            {/* Popup for recognized user */}
+            {recognizedUser && (
+                <div className="user-popup">
+                    <h3>User Detected</h3>
+                    <p><strong>Name:</strong> {recognizedUser.name}</p>
+                    <p><strong>Email:</strong> {recognizedUser.email}</p>
+                    <p><strong>UID:</strong> {recognizedUser.uid}</p>
                 </div>
             )}
         </div>

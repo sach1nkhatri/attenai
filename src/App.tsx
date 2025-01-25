@@ -8,6 +8,7 @@ import ModuleInfo from './components/Moduleinfo';
 import RegisterUser from './components/RegisterUser';
 import Attendance from './components/Attendance';
 import Settings from './components/settings';
+import BillingSection from './components/Billing';
 import PrivateRoute from './components/ProvateRoute'; // Import the PrivateRoute
 import "./App.css";
 
@@ -17,6 +18,7 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<BlogAttenai />} /> {/* Default route to BlogAttenai */}
                 <Route path="/login" element={<Login />} /> {/* Login route */}
+                <Route path="/billing" element={<BillingSection />} />
                 <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} /> {/* Dashboard route */}
                 <Route path="/add-schedule" element={<PrivateRoute element={<AddSchedule />} />} /> {/* Add Schedule route */}
                 <Route path="/moduleinfo" element={<PrivateRoute element={<ModuleInfo />} />} />
