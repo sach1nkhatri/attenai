@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import '../css/AddModule.css';
+import React, { useState } from "react";
+import "../css/AddModule.css";
 
 const AddModule = ({ onAddSchedule }) => {
-    const [module, setModule] = useState('');
-    const [startTime, setStartTime] = useState('');
-    const [endTime, setEndTime] = useState('');
+    const [module, setModule] = useState("");
+    const [startTime, setStartTime] = useState("");
+    const [endTime, setEndTime] = useState("");
     const [workingDays, setWorkingDays] = useState([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
     const handleDayChange = (day) => {
         setWorkingDays((prev) =>
@@ -24,19 +24,19 @@ const AddModule = ({ onAddSchedule }) => {
                 endTime,
                 workingDays,
             });
-            setModule('');
-            setStartTime('');
-            setEndTime('');
+            setModule("");
+            setStartTime("");
+            setEndTime("");
             setWorkingDays([]);
         } else {
-            alert('Please fill in all fields.');
+            alert("Please fill in all fields.");
         }
     };
 
     return (
-        <div className="container" style={{ marginTop: '50px' }}>
+        <div className="container" style={{ marginTop: "50px" }}>
             <h1 className="title">Add Schedules</h1>
-            <div className="input-group" style={{ marginBottom: '5px' }}>
+            <div className="input-group" style={{ marginBottom: "5px" }}>
                 <label className="input-label">Module</label>
                 <input
                     type="text"
@@ -45,7 +45,7 @@ const AddModule = ({ onAddSchedule }) => {
                     onChange={(e) => setModule(e.target.value)}
                 />
             </div>
-            <div className="input-group" style={{ marginBottom: '5px' }}>
+            <div className="input-group" style={{ marginBottom: "5px" }}>
                 <label className="input-label">Start Time</label>
                 <input
                     type="time"
@@ -54,7 +54,7 @@ const AddModule = ({ onAddSchedule }) => {
                     onChange={(e) => setStartTime(e.target.value)}
                 />
             </div>
-            <div className="input-group" style={{ marginBottom: '5px' }}>
+            <div className="input-group" style={{ marginBottom: "5px" }}>
                 <label className="input-label">End Time</label>
                 <input
                     type="time"
@@ -63,13 +63,13 @@ const AddModule = ({ onAddSchedule }) => {
                     onChange={(e) => setEndTime(e.target.value)}
                 />
             </div>
-            <div className="input-group" style={{ marginBottom: '5px', position: 'relative' }}>
+            <div className="input-group" style={{ marginBottom: "5px", position: "relative" }}>
                 <label className="input-label">Working Days</label>
                 <div
                     className="dropdown-menu"
                     onClick={() => setIsDropdownOpen((prev) => !prev)}
                 >
-                    {workingDays.length > 0 ? workingDays.join(', ') : 'Select Days'}
+                    {workingDays.length > 0 ? workingDays.join(", ") : "Select Days"}
                     <span className="dropdown-arrow">&#9660;</span>
                 </div>
                 {isDropdownOpen && (

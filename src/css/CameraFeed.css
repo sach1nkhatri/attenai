@@ -1,47 +1,16 @@
 .camera-feed-container {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.video-container {
+    width: 100%;
     display: flex;
-    flex-direction: column; /* Stack elements vertically */
-    align-items: center; /* Center align the content */
     justify-content: center;
-    margin: 0 auto;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 800px; /* Adjust as needed */
-}
-
-.webcam-container {
-    width: 100%;
-    margin-bottom: 20px; /* Space between webcam and user card */
-    border-radius: 20px;
-    text-align: center;
-}
-
-.status-container {
+    align-items: center;
+    flex-direction: column;
     margin-top: 10px;
-    color: #888;
-    font-size: 14px;
-}
-
-.user-card-container {
-    width: 100%;
-    max-width: 400px; /* Adjust as needed */
-}
-
-.user-card {
-    border: 1px solid #f2dda4;
-    background-color: #ffffff;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.user-card h3 {
-    margin: 10px 0;
-    font-size: 18px;
-}
-
-.user-card p {
-    font-size: 14px;
-    color: #555;
 }
