@@ -1,0 +1,82 @@
+.recent-activity {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.recent-activity-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.activity-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.activity-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.activity-name {
+    font-size: 16px;
+    margin: 0;
+    font-weight: bold;
+}
+
+.activity-time {
+    font-size: 14px;
+    color: #555;
+    margin: 0;
+}
+
+.activity-status {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-transform: uppercase;
+}
+
+.status-checked {
+    color: #28a745;
+    background-color: #dff0d8;
+}
+
+.status-late {
+    color: #dc3545;
+    background-color: #f8d7da;
+}

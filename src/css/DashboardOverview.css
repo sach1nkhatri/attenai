@@ -1,0 +1,116 @@
+.dashboard-overview {
+    margin-top: 70px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.dashboard-date {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.overview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.export-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.export-button:hover {
+    background-color: #9ccb37;
+}
+
+.overview-cards {
+    display: flex;
+    gap: 30px; /* Space between cards */
+    justify-content: space-between;
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+}
+
+.card {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: #fffdd0;
+    border: 1px solid #4e6e6c;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+}
+
+.card-image-container {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensures the image fits within the container */
+    border-radius: 50%; /* Makes the image circular */
+}
+
+.card-content h3 {
+    font-size: 16px;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+.card-content p {
+    font-size: 20px;
+    margin: 0;
+    color: #333;
+    font-weight: bold;
+}
+
+.card-content h3 {
+    font-size: 16px;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+.card-content p {
+    font-size: 20px;
+    margin: 0;
+    color: #000000;
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .card {
+        flex: 1 1 calc(50% - 20px); /* Two cards per row on medium screens */
+    }
+}
+
+@media (max-width: 600px) {
+    .card {
+        flex: 1 1 100%; /* One card per row on smaller screens */
+    }
+}

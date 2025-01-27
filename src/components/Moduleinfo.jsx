@@ -1,18 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { db } from "../firebaseConfig"; // Import Firestore
 import Header from "../components/clientHeader";
 import Footer from "../components/Footer";
 import DashboardSidebar from "../components/DashboardSidebar";
 import "../css/Moduleinfo.css";
 
-const Moduleinfo = () => {
+const ModuleInfo = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const location = useLocation();
     const { schedule } = location.state || {};
     const [students, setStudents] = useState([]);
     const [showAddModal, setShowAddModal] = useState(false);
-    const [showUpdateModal, setShowUpdateModal] = useState(false);
-    const [currentStudent, setCurrentStudent] = useState(null);
     const [newStudentData, setNewStudentData] = useState({
         name: "",
         id: "",
@@ -23,34 +23,42 @@ const Moduleinfo = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
-    const handleAddStudent = () => {
+    // Fetch students for the current module
+    useEffect(() => {
+        const fetchStudents = async () => {
+            if (schedule?.id) {
+                const docRef = doc(db, "schedules", schedule.id);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    setStudents(data.students || []);
+                }
+            }
+        };
+
+        fetchStudents();
+    }, [schedule]);
+
+    const handleAddStudent = async () => {
         if (newStudentData.name.trim() && newStudentData.id.trim()) {
-            setStudents([...students, { ...newStudentData }]);
+            // Add the new student locally
+            const newStudent = { ...newStudentData, photo: null }; // photo will be a URL if needed
+            const updatedStudents = [...students, newStudent];
+            setStudents(updatedStudents);
+
+            // Reset modal form
             setNewStudentData({ name: "", id: "", photo: null });
             setShowAddModal(false);
+
+            // Update Firestore
+            if (schedule?.id) {
+                const docRef = doc(db, "schedules", schedule.id);
+                await updateDoc(docRef, { students: updatedStudents });
+            }
+        } else {
+            alert("Please fill in all fields.");
         }
-    };
-
-    const handleUpdateStudent = () => {
-        if (currentStudent !== null) {
-            const updatedStudents = students.map((student, index) =>
-                index === currentStudent ? { ...newStudentData } : student
-            );
-            setStudents(updatedStudents);
-            setCurrentStudent(null);
-            setNewStudentData({ name: "", id: "", photo: null });
-            setShowUpdateModal(false);
-        }
-    };
-
-    const handleDeleteStudent = (index) => {
-        setStudents(students.filter((_, i) => i !== index));
-    };
-
-    const openUpdateModal = (index) => {
-        setCurrentStudent(index);
-        setNewStudentData(students[index]);
-        setShowUpdateModal(true);
     };
 
     return (
@@ -67,7 +75,7 @@ const Moduleinfo = () => {
                             <strong>Time:</strong> {schedule.startTime} - {schedule.endTime}
                         </p>
                         <p>
-                            <strong>Working Days:</strong> {schedule.workingDays}
+                            <strong>Working Days:</strong> {schedule.workingDays.join(", ")}
                         </p>
                     </>
                 ) : (
@@ -89,33 +97,22 @@ const Moduleinfo = () => {
                                         <div className="student-row">
                                             <img
                                                 src={
-                                                    student.photo
-                                                        ? URL.createObjectURL(student.photo)
-                                                        : "https://via.placeholder.com/50"
+                                                    student.photo ||
+                                                    "https://via.placeholder.com/50"
                                                 }
                                                 alt="Student"
                                                 className="student-photo"
                                             />
                                         </div>
                                         <div className="student-row">
-                                            <p><strong>Name:</strong> {student.name}</p>
+                                            <p>
+                                                <strong>Name:</strong> {student.name}
+                                            </p>
                                         </div>
                                         <div className="student-row">
-                                            <p><strong>ID:</strong> {student.id}</p>
-                                        </div>
-                                        <div className="student-actions">
-                                            <button
-                                                className="update-btn"
-                                                onClick={() => openUpdateModal(index)}
-                                            >
-                                                Update
-                                            </button>
-                                            <button
-                                                className="delete-btn"
-                                                onClick={() => handleDeleteStudent(index)}
-                                            >
-                                                Delete
-                                            </button>
+                                            <p>
+                                                <strong>ID:</strong> {student.id}
+                                            </p>
                                         </div>
                                     </div>
                                 ))
@@ -151,7 +148,10 @@ const Moduleinfo = () => {
                         <input
                             type="file"
                             onChange={(e) =>
-                                setNewStudentData({ ...newStudentData, photo: e.target.files[0] })
+                                setNewStudentData({
+                                    ...newStudentData,
+                                    photo: e.target.files[0],
+                                })
                             }
                         />
                         <button className="save-btn" onClick={handleAddStudent}>
@@ -163,44 +163,8 @@ const Moduleinfo = () => {
                     </div>
                 </div>
             )}
-            {/* Update Modal */}
-            {showUpdateModal && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <h3>Update Student</h3>
-                        <input
-                            type="text"
-                            placeholder="Name"
-                            value={newStudentData.name}
-                            onChange={(e) =>
-                                setNewStudentData({ ...newStudentData, name: e.target.value })
-                            }
-                        />
-                        <input
-                            type="text"
-                            placeholder="ID"
-                            value={newStudentData.id}
-                            onChange={(e) =>
-                                setNewStudentData({ ...newStudentData, id: e.target.value })
-                            }
-                        />
-                        <input
-                            type="file"
-                            onChange={(e) =>
-                                setNewStudentData({ ...newStudentData, photo: e.target.files[0] })
-                            }
-                        />
-                        <button className="save-btn" onClick={handleUpdateStudent}>
-                            Save
-                        </button>
-                        <button className="cancel-btn" onClick={() => setShowUpdateModal(false)}>
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };
 
-export default Moduleinfo;
+export default ModuleInfo;
