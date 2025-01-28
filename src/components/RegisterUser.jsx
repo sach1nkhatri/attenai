@@ -1,160 +1,143 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { db } from "../firebaseConfig"; // Import Firebase configuration
+import { db } from "../firebaseConfig";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 
 const RegisterUser = () => {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [uid, setUID] = useState("");
+    const [formData, setFormData] = useState({ name: "", uid: "" });
     const [status, setStatus] = useState("");
     const [loading, setLoading] = useState(false);
-    const [recognizedUsers, setRecognizedUsers] = useState([]);
+    const videoRef = useRef(null);
+    const canvasRef = useRef(null);
+    const [capturedImages, setCapturedImages] = useState([]);
+    const [capturing, setCapturing] = useState(false);
 
-    // Function to validate email
-    const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
+    useEffect(() => {
+        const startCamera = async () => {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            if (videoRef.current) videoRef.current.srcObject = stream;
+        };
 
-    // Function to handle registration
-    const handleRegister = async () => {
-        if (!name || !email || !uid) {
-            setStatus("Please fill out all fields.");
-            return;
+        startCamera();
+
+        return () => {
+            if (videoRef.current && videoRef.current.srcObject) {
+                videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+            }
+        };
+    }, []);
+
+    // Auto-capture images when a face is detected
+    useEffect(() => {
+        if (!capturing) return;
+
+        const interval = setInterval(() => {
+            if (capturedImages.length < 50) {
+                captureImage();
+            } else {
+                clearInterval(interval);
+                setCapturing(false);
+                setStatus("50 images captured. Ready to send.");
+            }
+        }, 300); // Capture every 300ms
+
+        return () => clearInterval(interval);
+    }, [capturing, capturedImages]);
+
+    const captureImage = () => {
+        if (videoRef.current && canvasRef.current) {
+            const canvas = canvasRef.current;
+            const context = canvas.getContext("2d");
+
+            context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+            const image = canvas.toDataURL("image/jpeg");
+
+            setCapturedImages((prev) => [...prev, image]);
         }
+    };
 
-        if (!isValidEmail(email)) {
-            setStatus("Please enter a valid email.");
+    const handleRegister = async () => {
+        const { name, uid } = formData;
+        if (!name || !uid || capturedImages.length < 50) {
+            setStatus("Ensure you capture 50 images before registering.");
             return;
         }
 
         try {
-            setStatus("Checking for duplicate UID...");
             setLoading(true);
-
-            // Check if UID already exists in Firebase Firestore
-            const userRef = collection(db, "users");
+            setStatus("Saving user to Firebase...");
+            const userRef = collection(db, "Attendee");
             const q = query(userRef, where("uid", "==", uid));
             const existingDocs = await getDocs(q);
-
             if (!existingDocs.empty) {
-                setStatus("UID already exists. Please use a different UID.");
+                setStatus("UID already exists. Use a different UID.");
                 setLoading(false);
                 return;
             }
+            await addDoc(userRef, { uid, name, registeredAt: new Date() });
 
-            // Save user details to Firebase Firestore
-            setStatus("Saving user to Firebase...");
-            await addDoc(userRef, { uid, name, email, registeredAt: new Date() });
+            setStatus("Sending images to backend...");
+            await axios.post(
+                "http://127.0.0.1:5000/register/",
+                { id: uid, name, images: capturedImages },
+                { headers: { "Content-Type": "application/json" } }
+            );
 
-            // Call the Flask backend to start the registration process
-            setStatus("Registering user with backend...");
-            const response = await axios.post("http://127.0.0.1:5000/register", {
-                id: uid,
-                name,
-                email,
-            });
-
-            setStatus(response.data.message || "User registered successfully!");
-            setName("");
-            setEmail("");
-            setUID("");
+            setStatus("User registered and trained successfully!");
+            setFormData({ name: "", uid: "" });
+            setCapturedImages([]);
         } catch (error) {
-            console.error("Error during registration:", error.response?.data || error.message);
-            setStatus("Failed to register user. Please try again.");
+            setStatus("Failed to register user.");
+            console.error("Error:", error.response?.data || error.message);
         } finally {
             setLoading(false);
         }
     };
-
-    // Function to handle training
-    const handleTrain = async () => {
-        try {
-            setStatus("Training the model...");
-            setLoading(true);
-
-            // Call the Flask backend to train the model
-            const response = await axios.post("http://127.0.0.1:5000/train");
-            setStatus(response.data.message || "Model trained successfully!");
-        } catch (error) {
-            console.error("Error during training:", error.response?.data || error.message);
-            setStatus("Failed to train the model. Please try again.");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // Function to handle user detection
-    const handleDetectUser = async () => {
-        try {
-            setStatus("Detecting users...");
-            setLoading(true);
-
-            // Call the Flask backend to recognize users
-            const response = await axios.get("http://127.0.0.1:5000/recognized_user");
-            const users = response.data.recognized_users;
-
-            setRecognizedUsers(users);
-            setStatus("User detection successful!");
-        } catch (error) {
-            console.error("Error during user detection:", error.response?.data || error.message);
-            setStatus("Failed to detect users. Please try again.");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // Effect to reset status after a delay
-    useEffect(() => {
-        if (status) {
-            const timer = setTimeout(() => setStatus(""), 5000);
-            return () => clearTimeout(timer);
-        }
-    }, [status]);
 
     return (
         <div>
             <h2>Register User</h2>
             <input
                 type="text"
+                name="name"
                 placeholder="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-            />
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
             />
             <input
                 type="text"
+                name="uid"
                 placeholder="UID"
-                value={uid}
-                onChange={(e) => setUID(e.target.value)}
+                value={formData.uid}
+                onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
             />
-            <button onClick={handleRegister} disabled={loading}>
-                {loading ? "Registering..." : "Register"}
+
+            <div>
+                <h3>Video Feed</h3>
+                <video ref={videoRef} autoPlay style={{ width: "100%", maxHeight: "400px", border: "1px solid black" }}></video>
+                <canvas ref={canvasRef} width="640" height="480" style={{ display: "none" }}></canvas>
+            </div>
+
+            <button onClick={() => setCapturing(true)} disabled={capturing || loading}>
+                {capturing ? "Capturing Images..." : "Start Auto-Capture"}
             </button>
-            <button onClick={handleTrain} disabled={loading}>
-                {loading ? "Training..." : "Train Model"}
+            <button onClick={handleRegister} disabled={loading || capturedImages.length < 50}>
+                {loading ? "Registering..." : "Register & Train"}
             </button>
-            <button onClick={handleDetectUser} disabled={loading}>
-                {loading ? "Detecting..." : "Detect User"}
-            </button>
+
             <p>{status}</p>
-            <h3>Video Feed</h3>
-            <img
-                src="http://127.0.0.1:5000/video_feed"
-                alt="Video Stream"
-                style={{ border: "1px solid black", width: "100%", maxHeight: "400px" }}
-            />
-            <h3>Recognized Users</h3>
-            <ul>
-                {recognizedUsers.map((user, index) => (
-                    <li key={index}>
-                        {user.name} (ID: {user.id}) - Confidence: {user.confidence}
-                    </li>
+
+            <h3>Captured Images</h3>
+            <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {capturedImages.map((img, index) => (
+                    <img
+                        key={index}
+                        src={img}
+                        alt={`Captured ${index + 1}`}
+                        style={{ width: "100px", height: "100px", margin: "5px", border: "1px solid black" }}
+                    />
                 ))}
-            </ul>
+            </div>
         </div>
     );
 };
