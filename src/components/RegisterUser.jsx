@@ -78,7 +78,7 @@ const RegisterUser = () => {
 
             setStatus("Sending images to backend...");
             await axios.post(
-                "http://127.0.0.1:5000/register/",
+                "http://127.0.0.1:5000/register",
                 { id: uid, name, images: capturedImages },
                 { headers: { "Content-Type": "application/json" } }
             );
