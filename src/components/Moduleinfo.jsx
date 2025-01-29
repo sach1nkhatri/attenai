@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
-import { db } from "../firebaseConfig"; // Import Firestore
+import { doc, updateDoc, getDoc, collection, getDocs } from "firebase/firestore";
+import { db } from "../firebaseConfig";
 import Header from "../components/clientHeader";
 import Footer from "../components/Footer";
 import DashboardSidebar from "../components/DashboardSidebar";
@@ -12,12 +12,10 @@ const ModuleInfo = () => {
     const location = useLocation();
     const { schedule } = location.state || {};
     const [students, setStudents] = useState([]);
+    const [registeredAttendees, setRegisteredAttendees] = useState([]); // Fetch attendees
+    const [searchUID, setSearchUID] = useState(""); // Search input for UID
+    const [selectedStudent, setSelectedStudent] = useState(""); // Selected UID
     const [showAddModal, setShowAddModal] = useState(false);
-    const [newStudentData, setNewStudentData] = useState({
-        name: "",
-        id: "",
-        photo: null,
-    });
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -40,24 +38,70 @@ const ModuleInfo = () => {
         fetchStudents();
     }, [schedule]);
 
+    // Fetch Registered Attendees from Firestore
+    useEffect(() => {
+        const fetchAttendees = async () => {
+            const attendeesRef = collection(db, "Attendee");
+            const attendeeSnapshot = await getDocs(attendeesRef);
+            const attendeesList = attendeeSnapshot.docs.map(doc => ({
+                id: doc.id, // UID as the ID
+                ...doc.data()
+            }));
+            setRegisteredAttendees(attendeesList);
+        };
+
+        fetchAttendees();
+    }, []);
+
     const handleAddStudent = async () => {
-        if (newStudentData.name.trim() && newStudentData.id.trim()) {
-            // Add the new student locally
-            const newStudent = { ...newStudentData, photo: null }; // photo will be a URL if needed
-            const updatedStudents = [...students, newStudent];
-            setStudents(updatedStudents);
+        if (!selectedStudent) {
+            alert("Please select a student to add.");
+            return;
+        }
 
-            // Reset modal form
-            setNewStudentData({ name: "", id: "", photo: null });
-            setShowAddModal(false);
+        // Find student details from the Attendee list
+        const studentToAdd = registeredAttendees.find((student) => student.uid === selectedStudent);
 
-            // Update Firestore
-            if (schedule?.id) {
-                const docRef = doc(db, "schedules", schedule.id);
-                await updateDoc(docRef, { students: updatedStudents });
-            }
-        } else {
-            alert("Please fill in all fields.");
+        if (!studentToAdd) {
+            alert("Selected student not found.");
+            return;
+        }
+
+        // Prevent duplicate entries
+        if (students.some(student => student.uid === studentToAdd.uid)) {
+            alert("This student is already added to the module.");
+            return;
+        }
+
+        const newStudent = {
+            name: studentToAdd.name,
+            uid: studentToAdd.uid, // Use UID instead of manually entered ID
+        };
+
+        const updatedStudents = [...students, newStudent];
+        setStudents(updatedStudents);
+
+        setShowAddModal(false);
+        setSelectedStudent("");
+        setSearchUID(""); // Reset search field
+
+        // Update Firestore
+        if (schedule?.id) {
+            const docRef = doc(db, "schedules", schedule.id);
+            await updateDoc(docRef, { students: updatedStudents });
+        }
+    };
+
+    const handleDeleteStudent = async (uid) => {
+        if (!window.confirm("Are you sure you want to remove this student?")) return;
+
+        const updatedStudents = students.filter(student => student.uid !== uid);
+        setStudents(updatedStudents);
+
+        // Update Firestore
+        if (schedule?.id) {
+            const docRef = doc(db, "schedules", schedule.id);
+            await updateDoc(docRef, { students: updatedStudents });
         }
     };
 
@@ -68,15 +112,9 @@ const ModuleInfo = () => {
                 {schedule ? (
                     <>
                         <h1>Module Information</h1>
-                        <p>
-                            <strong>Module:</strong> {schedule.module}
-                        </p>
-                        <p>
-                            <strong>Time:</strong> {schedule.startTime} - {schedule.endTime}
-                        </p>
-                        <p>
-                            <strong>Working Days:</strong> {schedule.workingDays.join(", ")}
-                        </p>
+                        <p><strong>Module:</strong> {schedule.module}</p>
+                        <p><strong>Time:</strong> {schedule.startTime} - {schedule.endTime}</p>
+                        <p><strong>Working Days:</strong> {schedule.workingDays.join(", ")}</p>
                     </>
                 ) : (
                     <h1>No Module Information Available</h1>
@@ -95,24 +133,15 @@ const ModuleInfo = () => {
                                 students.map((student, index) => (
                                     <div key={index} className="student-item">
                                         <div className="student-row">
-                                            <img
-                                                src={
-                                                    student.photo ||
-                                                    "https://via.placeholder.com/50"
-                                                }
-                                                alt="Student"
-                                                className="student-photo"
-                                            />
+                                            <p><strong>Name:</strong> {student.name}</p>
                                         </div>
                                         <div className="student-row">
-                                            <p>
-                                                <strong>Name:</strong> {student.name}
-                                            </p>
+                                            <p><strong>UID:</strong> {student.uid}</p>
                                         </div>
                                         <div className="student-row">
-                                            <p>
-                                                <strong>ID:</strong> {student.id}
-                                            </p>
+                                            <button className="delete-btn" onClick={() => handleDeleteStudent(student.uid)}>
+                                                Remove
+                                            </button>
                                         </div>
                                     </div>
                                 ))
@@ -129,31 +158,32 @@ const ModuleInfo = () => {
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <h3>Add Student</h3>
+
+                        {/* Search Bar for UID */}
                         <input
                             type="text"
-                            placeholder="Name"
-                            value={newStudentData.name}
-                            onChange={(e) =>
-                                setNewStudentData({ ...newStudentData, name: e.target.value })
-                            }
+                            placeholder="Search by UID"
+                            value={searchUID}
+                            onChange={(e) => setSearchUID(e.target.value)}
                         />
-                        <input
-                            type="text"
-                            placeholder="ID"
-                            value={newStudentData.id}
-                            onChange={(e) =>
-                                setNewStudentData({ ...newStudentData, id: e.target.value })
-                            }
-                        />
-                        <input
-                            type="file"
-                            onChange={(e) =>
-                                setNewStudentData({
-                                    ...newStudentData,
-                                    photo: e.target.files[0],
-                                })
-                            }
-                        />
+
+                        {/* Filtered Dropdown Showing UID & Name */}
+                        <select
+                            value={selectedStudent}
+                            onChange={(e) => setSelectedStudent(e.target.value)}
+                        >
+                            <option value="">Select Student</option>
+                            {registeredAttendees
+                                .filter((student) =>
+                                    student.uid.toLowerCase().includes(searchUID.toLowerCase())
+                                )
+                                .map((student) => (
+                                    <option key={student.uid} value={student.uid}>
+                                        {student.name} (UID: {student.uid})
+                                    </option>
+                                ))}
+                        </select>
+
                         <button className="save-btn" onClick={handleAddStudent}>
                             Save
                         </button>
