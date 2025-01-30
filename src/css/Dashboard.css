@@ -1,14 +1,41 @@
+/* 📌 Make sure `.dashboard-grid` does not affect the footer */
 .dashboard-grid {
     display: grid;
     grid-template-columns: 2fr 1.5fr; /* CameraFeed on the left, RecentActivity on the right */
     gap: 20px; /* Space between the components */
-    margin: 20px;
+    margin-top: 100px;
+    min-height: calc(100vh - 60px); /* Ensures grid takes up full height minus footer */
 }
 
-/* Responsive Design */
+/* 📌 Ensure Footer is Full-Width & Stays at Bottom */
+.dash-footer {
+    width: 100%;
+    position: relative; /* ✅ Moves with content */
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0); /* ✅ Semi-transparent black */
+    color: #000000;
+    text-align: center;
+    padding: 15px 0;
+    z-index: 1000; /* ✅ Keeps it on top */
+}
+
+/* 📌 Ensure the page expands fully and pushes footer down */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* ✅ Ensures full page height */
+}
+
+/* 📌 Pushes content up to prevent footer from floating */
+.main-content {
+    flex: 1;
+}
+
+/* 📌 Fix for Mobile View */
 @media (max-width: 768px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr; /* Stack components vertically on smaller screens */
+    .dash-footer {
+        bottom: 0; /* ✅ Ensures correct position on smaller screens */
+        padding: 10px 0; /* ✅ Reduce padding for mobile */
     }
 }
-

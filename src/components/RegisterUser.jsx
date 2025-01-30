@@ -2,15 +2,20 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { db } from "../firebaseConfig";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import "../css/RegisterUser.css"; // ✅ Import CSS for styling
+import Header from "../components/clientHeader";
+import DashboardSidebar from "../components/DashboardSidebar";
 
 const RegisterUser = () => {
     const [formData, setFormData] = useState({ name: "", uid: "" });
-    const [status, setStatus] = useState("");
+    const [status, setStatus] = useState("Start capturing images.");
     const [loading, setLoading] = useState(false);
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const [capturedImages, setCapturedImages] = useState([]);
     const [capturing, setCapturing] = useState(false);
+    const [step, setStep] = useState(1); // 1 = Close, 2 = Far
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     useEffect(() => {
         const startCamera = async () => {
@@ -32,12 +37,12 @@ const RegisterUser = () => {
         if (!capturing) return;
 
         const interval = setInterval(() => {
-            if (capturedImages.length < 50) {
+            if (capturedImages.length < 100) {
                 captureImage();
             } else {
                 clearInterval(interval);
                 setCapturing(false);
-                setStatus("50 images captured. Ready to send.");
+                setStatus("100 images captured. Ready to send.");
             }
         }, 300); // Capture every 300ms
 
@@ -53,13 +58,19 @@ const RegisterUser = () => {
             const image = canvas.toDataURL("image/jpeg");
 
             setCapturedImages((prev) => [...prev, image]);
+
+            // Switch message when reaching 50 images
+            if (capturedImages.length === 49) {
+                setStatus("Move further away for the next 50 images.");
+                setStep(2);
+            }
         }
     };
 
     const handleRegister = async () => {
         const { name, uid } = formData;
-        if (!name || !uid || capturedImages.length < 50) {
-            setStatus("Ensure you capture 50 images before registering.");
+        if (!name || !uid || capturedImages.length < 100) {
+            setStatus("Ensure you capture 100 images before registering.");
             return;
         }
 
@@ -86,6 +97,7 @@ const RegisterUser = () => {
             setStatus("User registered and trained successfully!");
             setFormData({ name: "", uid: "" });
             setCapturedImages([]);
+            setStep(1); // Reset for next registration
         } catch (error) {
             setStatus("Failed to register user.");
             console.error("Error:", error.response?.data || error.message);
@@ -94,50 +106,72 @@ const RegisterUser = () => {
         }
     };
 
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
     return (
-        <div>
-            <h2>Register User</h2>
-            <input
-                type="text"
-                name="name"
-                placeholder="Name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
-            />
-            <input
-                type="text"
-                name="uid"
-                placeholder="UID"
-                value={formData.uid}
-                onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
-            />
+        <div className="register-container">
+            <DashboardSidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+            <div className={`main-content ${isSidebarOpen ? "sidebar-open" : ""}`}>
+                <Header toggleSidebar={toggleSidebar} />
+                <div className="content">
+                    <h2>Register User</h2>
 
-            <div>
-                <h3>Video Feed</h3>
-                <video ref={videoRef} autoPlay style={{ width: "100%", maxHeight: "400px", border: "1px solid black" }}></video>
-                <canvas ref={canvasRef} width="640" height="480" style={{ display: "none" }}></canvas>
+                    <div className="form-section">
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder="Name"
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
+                        />
+                        <input
+                            type="text"
+                            name="uid"
+                            placeholder="UID"
+                            value={formData.uid}
+                            onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
+                        />
+                    </div>
+
+                    <div className="video-section">
+                        <h3>Video Feed</h3>
+                        <video ref={videoRef} autoPlay className="video-feed"></video>
+                        <canvas ref={canvasRef} width="640" height="480" style={{ display: "none" }}></canvas>
+                    </div>
+
+                    <div className="button-section">
+                        <button onClick={() => setCapturing(true)} disabled={capturing || loading}>
+                            {capturing ? "Capturing Images..." : "Start Auto-Capture"}
+                        </button>
+                        <button onClick={handleRegister} disabled={loading || capturedImages.length < 100}>
+                            {loading ? "Registering..." : "Register & Train"}
+                        </button>
+                    </div>
+
+                    <p className={`status-message ${step === 1 ? "blue-text" : "red-text"}`}>
+                        {status}
+                    </p>
+
+                    <h3>Captured Images ({capturedImages.length}/100)</h3>
+                    <div className="image-grid">
+                        {capturedImages.map((img, index) => (
+                            <img key={index} src={img} alt={`Captured ${index + 1}`} className="captured-image" />
+                        ))}
+                    </div>
+                </div>
             </div>
 
-            <button onClick={() => setCapturing(true)} disabled={capturing || loading}>
-                {capturing ? "Capturing Images..." : "Start Auto-Capture"}
-            </button>
-            <button onClick={handleRegister} disabled={loading || capturedImages.length < 50}>
-                {loading ? "Registering..." : "Register & Train"}
-            </button>
-
-            <p>{status}</p>
-
-            <h3>Captured Images</h3>
-            <div style={{ display: "flex", flexWrap: "wrap" }}>
-                {capturedImages.map((img, index) => (
-                    <img
-                        key={index}
-                        src={img}
-                        alt={`Captured ${index + 1}`}
-                        style={{ width: "100px", height: "100px", margin: "5px", border: "1px solid black" }}
-                    />
-                ))}
-            </div>
+            {/* ✅ Register Footer */}
+            <footer className="register-footer">
+                <p>
+                    &copy; 2025 AttenAi | Developed By{' '}
+                    <a href="https://sachin.bio/" target="_blank" rel="noopener noreferrer">
+                        Sachin Khatri
+                    </a>
+                </p>
+            </footer>
         </div>
     );
 };
