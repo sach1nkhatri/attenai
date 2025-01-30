@@ -1,14 +1,22 @@
-// src/components/clientHeader.jsx
+// src/components/ClientHeader.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { getAuth, signOut } from "firebase/auth";
 import "../css/clientHeader.css";
 import attenailogo from "../assets/attenailogo1.png";
 
 const ClientHeader = ({ toggleSidebar }) => {
     const navigate = useNavigate();
+    const auth = getAuth(); // ✅ Get Firebase Auth instance
 
-    const handleLogoutClick = () => {
-        navigate("/"); // Navigate to the homepage
+    const handleLogoutClick = async () => {
+        try {
+            await signOut(auth); // ✅ Logs out user from Firebase
+            navigate("/"); // ✅ Redirect to login/home page after logout
+        } catch (error) {
+            console.error("Logout Error:", error.message);
+            alert("Failed to log out. Please try again.");
+        }
     };
 
     return (

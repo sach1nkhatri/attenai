@@ -16,7 +16,7 @@ const DashboardSidebar = ({ isOpen, toggleSidebar }) => {
                 <Link to="/register" onClick={toggleSidebar}>
                     <button>Register Users</button>
                 </Link>
-                <button>User Details</button>
+                {/*<button>User Details</button>*/}
                 <Link to="/add-schedule" onClick={toggleSidebar}>
                     <button>Add Schedule</button>
                 </Link>

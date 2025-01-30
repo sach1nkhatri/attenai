@@ -111,7 +111,7 @@ const ModuleInfo = () => {
             <div className="module-header">
                 {schedule ? (
                     <>
-                        <h1>Module Information</h1>
+                        <h1>Sechdule Information</h1>
                         <p><strong>Module:</strong> {schedule.module}</p>
                         <p><strong>Time:</strong> {schedule.startTime} - {schedule.endTime}</p>
                         <p><strong>Working Days:</strong> {schedule.workingDays.join(", ")}</p>

@@ -1,33 +1,72 @@
 .insights-container {
-    background-color: #fff;
+    background: white;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin: 20px 0;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin: 20px;
 }
 
-.insights-container h2 {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #333;
+/* 📌 Controls Section */
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
+/* 📌 Dropdown Styling */
+.module-selector,
+.chart-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.module-selector select,
+.chart-toggle select {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+/* 📌 Chart Layout */
 .charts {
     display: flex;
-    justify-content: space-around;
-    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
 }
 
 .chart {
-    flex: 1;
-    text-align: center;
-    max-width: 250px; /* Set a maximum width for the chart */
-    margin: 0 auto; /* Center the chart horizontally */
+    width: 80%;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.chart h3 {
-    font-size: 16px;
-    margin-bottom: 10px;
-    color: #555;
+.bar-chart-container {
+    height: 300px; /* ✅ Fix height for proper rendering */
+}
+
+/* 📌 Responsive Styling */
+@media (max-width: 768px) {
+    .controls {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .charts {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .chart {
+        width: 90%;
+    }
 }

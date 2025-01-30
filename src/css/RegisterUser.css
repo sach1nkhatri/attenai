@@ -1,84 +1,41 @@
-.register-user-container {
-    max-width: 600px;
-    margin: 20px auto;
+.register-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin-top: 100px;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.main-content {
+    flex-grow: 1;
     padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    transition: transform 0.3s ease-in-out;
 }
 
-.register-user-container h1 {
-    margin-bottom: 20px;
-    color: #333;
+.video-feed {
+    width: 100%;
+    max-height: 400px;
+    border: 1px solid black;
+    border-radius: 10px;
 }
 
-.input-group {
-    margin-bottom: 15px;
-    text-align: left;
-}
-
-.input-group label {
-    display: block;
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #555;
-}
-
-.input-group input {
-    width: calc(100% - 20px);
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    outline: none;
-}
-
-.input-group input:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
-}
-
-.webcam-container {
-    margin: 20px 0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.button-group {
-    margin: 20px 0;
-}
-
-.button-group button {
-    background-color: #007bff;
-    color: #fff;
+.button-section button {
+    padding: 10px 15px;
+    margin: 5px;
     border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
-    font-size: 14px;
+    border-radius: 5px;
     cursor: pointer;
-    margin: 0 10px;
-    transition: background-color 0.3s;
 }
 
-.button-group button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-.button-group button:hover:not(:disabled) {
-    background-color: #0056b3;
-}
-
-.status-container {
-    margin-top: 20px;
-}
-
-.status {
-    font-size: 14px;
-    color: #555;
-    font-style: italic;
+.register-footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0);
+    color: #000000;
+    text-align: center;
+    padding: 15px 0;
+    z-index: 1000;
 }

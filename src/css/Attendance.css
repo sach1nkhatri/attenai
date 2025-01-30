@@ -1,21 +1,45 @@
+/* 📌 Page Layout */
 .attendance-page {
     display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
 }
 
+/* 📌 Sidebar Adjustments */
 .main-content {
     flex-grow: 1;
     padding: 20px;
+    transition: transform 0.3s ease-in-out;
 }
 
+/* 📌 Prevents sidebar from shifting content */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: -250px; /* ✅ Hidden by default */
+    width: 250px;
+    height: 100vh;
+    background-color: #1a1a1a;
+    transition: left 0.3s ease-in-out;
+    z-index: 1000;
+}
+
+.sidebar-open .sidebar-overlay {
+    left: 0; /* ✅ Slide in when opened */
+}
+
+/* 📌 Main Content Styling */
 .content {
     background: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex: 1; /* ✅ Pushes footer down */
 }
 
+/* 📌 Attendance Header */
 .attendance-header {
     display: flex;
     justify-content: space-between;
@@ -23,6 +47,7 @@
     margin-bottom: 20px;
 }
 
+/* 📌 Search Bar */
 .search-input {
     padding: 10px;
     width: 200px;
@@ -36,53 +61,42 @@
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
-.add-section {
+/* 📌 Attendance Tables Layout */
+.attendance-modules {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.add-section input, .add-section select {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    flex: 1;
-}
-
-.add-button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.add-button:hover {
-    background-color: #0056b3;
-}
-
-.attendance-tables {
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-around; /* ✅ Ensures new tables appear side by side */
     margin-top: 20px;
 }
 
-.table-container {
-    margin-bottom: 30px;
+.module-attendance-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* 📌 Table Design */
+.module-section {
+    width: 48%;
+    background: white;
     padding: 15px;
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .attendance-table {
     width: 100%;
     border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.attendance-table th, .attendance-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
+.attendance-table th,
+.attendance-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
     text-align: left;
 }
 
@@ -91,6 +105,15 @@
     color: white;
 }
 
+.attendance-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.attendance-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* 📌 Status Styling */
 .status-present {
     color: green;
     font-weight: bold;
@@ -101,6 +124,17 @@
     font-weight: bold;
 }
 
+.status-late {
+    color: #FFC107;
+    font-weight: bold;
+}
+
+.status-on-time {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+/* 📌 Delete Button */
 .delete-button {
     background-color: #dc3545;
     color: white;
@@ -115,11 +149,18 @@
     background-color: #c82333;
 }
 
-.animated-input, .animated-button, .animated-section, .animated-tables, .animated-card, .animated-delete {
+/* 📌 Animations */
+.animated-input,
+.animated-button,
+.animated-section,
+.animated-tables,
+.animated-card,
+.animated-delete {
     transition: all 0.3s ease-in-out;
 }
 
-.animated-section:hover, .animated-card:hover {
+.animated-section:hover,
+.animated-card:hover {
     transform: scale(1.02);
 }
 
@@ -127,9 +168,40 @@
     transform: rotate(-3deg);
 }
 
+/* 📌 Table Header */
 .table-container h2 {
     text-align: center;
     font-size: 1.5em;
     color: #333;
     margin-bottom: 15px;
+}
+
+/* 📌 Transparent Footer - Stays at Bottom */
+.attendance-footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.3); /* ✅ Fully Transparent */
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    z-index: 1000;
+}
+
+/* 📌 Responsive Design */
+@media (max-width: 768px) {
+    .module-section {
+        width: 100%; /* ✅ Makes tables full width on mobile */
+    }
+
+    .attendance-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .attendance-footer {
+        bottom: 0;
+        padding: 10px 0;
+    }
 }

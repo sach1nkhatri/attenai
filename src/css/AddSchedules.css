@@ -78,3 +78,11 @@
     color: #666;
     font-style: italic;
 }
+.edit-button {
+    padding: 5px 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { getDatabase, ref, set } from 'firebase/database'; // Import Realtime Database methods
+import {
+    getAuth, createUserWithEmailAndPassword,
+    signInWithEmailAndPassword, onAuthStateChanged,
+    setPersistence, browserLocalPersistence
+} from 'firebase/auth';
+import { getDatabase, ref, set } from 'firebase/database'; // Firebase Realtime Database
 import '../css/Login.css';
 import sinchanGif from '../assets/sinchan.gif';
 
 const LoginSignUp = () => {
     const navigate = useNavigate();
-    const [isLogin, setIsLogin] = useState(true); // State to toggle between Login and Sign-Up
+    const [isLogin, setIsLogin] = useState(true);
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -16,32 +20,50 @@ const LoginSignUp = () => {
         organizationName: '',
     });
 
-    const auth = getAuth(); // Firebase Auth instance
-    const database = getDatabase(); // Firebase Realtime Database instance
+    const auth = getAuth();
+    const database = getDatabase();
+
+    // ✅ Keep User Logged In (Check Auth State)
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                navigate('/dashboard'); // ✅ Redirect logged-in users to Dashboard
+            }
+        });
+
+        return () => unsubscribe(); // Cleanup listener on unmount
+    }, [navigate]);
+
+    // ✅ Ensure session persistence
+    useEffect(() => {
+        setPersistence(auth, browserLocalPersistence);
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
+    // ✅ Login Function
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
             await signInWithEmailAndPassword(auth, formData.email, formData.password);
-            navigate('/dashboard'); // Navigate to the dashboard after successful login
+            navigate('/dashboard'); // ✅ Redirect after login
         } catch (error) {
             console.error('Login Error:', error.message);
             alert('Login failed. Please check your credentials.');
         }
     };
 
+    // ✅ Sign-Up Function
     const handleSignUp = async (e) => {
         e.preventDefault();
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
             const user = userCredential.user;
 
-            // Add user details to Realtime Database
+            // ✅ Add user details to Realtime Database
             await set(ref(database, `Paidusers/${user.uid}`), {
                 fullName: formData.fullName,
                 email: formData.email,
