@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../firebaseConfig";
-import { collection, onSnapshot, doc, updateDoc, query, where } from "firebase/firestore";
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import "../css/Attendance.css";
 import Header from "../components/clientHeader";
@@ -12,9 +12,9 @@ const Attendance = () => {
     const [user, setUser] = useState(null);
     const auth = getAuth();
 
-    // ✅ Track logged-in user
+    // ✅ Step 1: Track logged-in user
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {
                 console.log("✅ Logged-in user:", currentUser.uid);
                 setUser(currentUser);
@@ -24,37 +24,56 @@ const Attendance = () => {
             }
         });
 
-        return () => unsubscribe();
+        return () => unsubscribeAuth();
     }, []);
 
-    // ✅ Fetch Attendance Data for Logged-in User
+    // ✅ Step 2: Fetch Attendance Data for ALL Users
     useEffect(() => {
         if (!user) {
-            console.error("❌ No logged-in user found.");
+            console.warn("⚠️ Waiting for user authentication...");
             return;
         }
 
-        const attendanceRef = collection(db, "AttendanceRecords");
-        const q = query(attendanceRef, where("uid", "==", user.uid));
+        console.log(`📡 Fetching attendance for all users...`);
 
-        console.log(`📡 Fetching attendance for UID: ${user.uid}`);
+        const attendanceRef = collection(db, "AttendanceRecords");
+        const q = query(
+            attendanceRef,
+            orderBy("timeRecorded", "desc") // ✅ Fetch newest records first
+        );
 
         // ✅ Listen for real-time updates
-        const unsubscribe = onSnapshot(q, (snapshot) => {
+        const unsubscribeFirestore = onSnapshot(q, (snapshot) => {
             if (snapshot.empty) {
-                console.warn("⚠️ No attendance records found.");
+                console.warn("⚠️ No attendance records found in Firestore.");
                 setAttendanceData({});
                 return;
             }
 
+            console.log(`✅ Firestore returned ${snapshot.docs.length} documents.`);
             const moduleWiseData = {};
 
             snapshot.docs.forEach(docSnapshot => {
                 const record = docSnapshot.data();
                 console.log(`📄 Retrieved record: ${JSON.stringify(record)}`);
 
-                // ✅ Extract date from timestamp
-                const dateRecorded = record.timeRecorded?.split(" ")[0] || "Unknown Date";
+                if (!record.module || !record.timeRecorded) {
+                    console.warn(`⚠️ Skipping record: Missing 'module' or 'timeRecorded'`);
+                    return;
+                }
+
+                // ✅ Extract date from Firestore timestamp
+                let dateRecorded = "Unknown Date";
+                let formattedTime = "Unknown Time";
+
+                if (record.timeRecorded?.seconds) {
+                    const timestamp = new Date(record.timeRecorded.seconds * 1000);
+                    dateRecorded = timestamp.toISOString().split("T")[0];
+                    formattedTime = timestamp.toLocaleString(); // ✅ Convert Firestore Timestamp
+                } else if (typeof record.timeRecorded === "string") {
+                    dateRecorded = record.timeRecorded.split(" ")[0];
+                    formattedTime = record.timeRecorded;
+                }
 
                 if (!moduleWiseData[record.module]) {
                     moduleWiseData[record.module] = {};
@@ -63,18 +82,20 @@ const Attendance = () => {
                     moduleWiseData[record.module][dateRecorded] = [];
                 }
 
-                moduleWiseData[record.module][dateRecorded].push(record);
+                moduleWiseData[record.module][dateRecorded].push({
+                    ...record,
+                    formattedTime
+                });
             });
 
-            console.log("✅ Final Attendance Data:", moduleWiseData);
+            console.log("✅ Final Processed Attendance Data:", moduleWiseData);
             setAttendanceData(moduleWiseData);
         }, (error) => {
             console.error("❌ Firestore Query Error:", error.code, error.message);
         });
 
-        return () => unsubscribe();
-    }, [user]); // ✅ Fetch only when user logs in
-
+        return () => unsubscribeFirestore();
+    }, [user]); // ✅ Fetch only when user is available
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -109,20 +130,47 @@ const Attendance = () => {
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                {attendanceData[moduleName]?.[date]?.map((entry, index) => (
-                                                    <tr key={entry.id}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{entry.name}</td>
-                                                        <td>{entry.timeRecorded || "Updating..."}</td>
-                                                        <td className={entry.status === "Present" ? "status-present" : "status-absent"}>
-                                                            {entry.status}
-                                                        </td>
-                                                        <td className={entry.isLate === "Late" ? "status-late" : "status-on-time"}>
-                                                            {entry.isLate}
-                                                        </td>
-                                                    </tr>
-                                                ))}
+                                                {attendanceData[moduleName]?.[date]?.map((entry, index) => {
+                                                    // ✅ Convert Firestore Timestamp
+                                                    let formattedTime = "Unknown Time";
+                                                    let lateStatus = "On Time"; // Default status
+
+                                                    if (entry.timeRecorded?.seconds) {
+                                                        const timestamp = new Date(entry.timeRecorded.seconds * 1000);
+                                                        formattedTime = timestamp.toLocaleTimeString([], {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                            hour12: true
+                                                        }); // ✅ Only display HH:MM AM/PM
+
+                                                        // ✅ Check if the user is late based on the schedule
+                                                        const scheduledTime = new Date(timestamp);
+                                                        scheduledTime.setHours(9, 0, 0); // 🔹 Replace with actual scheduled time (e.g., 9:00 AM)
+
+                                                        if (timestamp > scheduledTime) {
+                                                            lateStatus = "Late"; // ✅ If the recorded time is after scheduled time, mark as "Late"
+                                                        }
+                                                    } else if (typeof entry.timeRecorded === "string") {
+                                                        formattedTime = entry.timeRecorded.split(" ")[1]; // ✅ Extract only time part
+                                                    }
+
+                                                    return (
+                                                        <tr key={entry.id}>
+                                                            <td>{index + 1}</td>
+                                                            <td>{entry.name}</td>
+                                                            <td>{formattedTime}</td>
+                                                            {/* ✅ Shows only HH:MM AM/PM */}
+                                                            <td className={entry.status === "Present" ? "status-present" : "status-absent"}>
+                                                                {entry.status}
+                                                            </td>
+                                                            <td className={lateStatus === "Late" ? "status-late" : "status-on-time"}>
+                                                                {lateStatus} {/* ✅ Correctly displays Late/On Time */}
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
                                                 </tbody>
+
                                             </table>
                                         </div>
                                     ))}
