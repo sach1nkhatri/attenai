@@ -3,15 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import {
     getAuth, createUserWithEmailAndPassword,
     signInWithEmailAndPassword, onAuthStateChanged,
-    setPersistence, browserLocalPersistence
+    setPersistence, browserLocalPersistence, signOut
 } from 'firebase/auth';
-import { getDatabase, ref, set } from 'firebase/database'; // Firebase Realtime Database
+import { getFirestore, doc, setDoc } from "firebase/firestore"; // Firestore Import
 import '../css/Login.css';
 import sinchanGif from '../assets/sinchan.gif';
 
 const LoginSignUp = () => {
     const navigate = useNavigate();
     const [isLogin, setIsLogin] = useState(true);
+    const [currentUser, setCurrentUser] = useState(null); // ✅ Track logged-in user
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -21,17 +22,27 @@ const LoginSignUp = () => {
     });
 
     const auth = getAuth();
-    const database = getDatabase();
+    const db = getFirestore();
 
-    // ✅ Keep User Logged In (Check Auth State)
+    // ✅ Keep User Logged In (Track Auth State)
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
-                navigate('/dashboard'); // ✅ Redirect logged-in users to Dashboard
+                console.log("✅ Logged-in user:", user.email);
+                setCurrentUser(user);
+                localStorage.setItem("loggedInUser", JSON.stringify(user));
+                navigate('/dashboard'); // ✅ Redirect after login
+            } else {
+                console.log("❌ No user logged in");
+                setCurrentUser(null);
+                localStorage.removeItem("loggedInUser");
             }
         });
 
-        return () => unsubscribe(); // Cleanup listener on unmount
+        return () => {
+            console.log("🔄 Cleaning up Auth Listener...");
+            unsubscribe(); // ✅ Cleanup listener when component unmounts
+        };
     }, [navigate]);
 
     // ✅ Ensure session persistence
@@ -56,15 +67,15 @@ const LoginSignUp = () => {
         }
     };
 
-    // ✅ Sign-Up Function
+    // ✅ Sign-Up Function (Saves User in Firestore)
     const handleSignUp = async (e) => {
         e.preventDefault();
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
             const user = userCredential.user;
 
-            // ✅ Add user details to Realtime Database
-            await set(ref(database, `Paidusers/${user.uid}`), {
+            // ✅ Store user details in Firestore
+            await setDoc(doc(db, "Users", user.uid), {
                 fullName: formData.fullName,
                 email: formData.email,
                 contactNumber: formData.contactNumber,
@@ -72,11 +83,23 @@ const LoginSignUp = () => {
                 createdAt: new Date().toISOString(),
             });
 
-            alert('Sign-Up Successful!');
+            alert("Sign-Up Successful!");
             setIsLogin(true); // Switch to login after successful sign-up
         } catch (error) {
-            console.error('Sign-Up Error:', error.message);
-            alert('Sign-Up failed. Please try again.');
+            console.error("Sign-Up Error:", error.message);
+            alert("Sign-Up failed. Please try again.");
+        }
+    };
+
+    // ✅ Logout Function (Clears Session Data)
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            console.log("✅ User logged out successfully.");
+            localStorage.removeItem("loggedInUser");
+            navigate('/login'); // Redirect to login after logout
+        } catch (error) {
+            console.error("❌ Error logging out:", error);
         }
     };
 

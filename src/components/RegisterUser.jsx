@@ -5,7 +5,10 @@ import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import "../css/RegisterUser.css"; // ✅ Import CSS for styling
 import Header from "../components/clientHeader";
 import DashboardSidebar from "../components/DashboardSidebar";
+import { getAuth } from "firebase/auth";
 
+
+const auth = getAuth(); // ✅ Get the logged-in user
 const RegisterUser = () => {
     const [formData, setFormData] = useState({ name: "", uid: "" });
     const [status, setStatus] = useState("Start capturing images.");
@@ -69,6 +72,13 @@ const RegisterUser = () => {
 
     const handleRegister = async () => {
         const { name, uid } = formData;
+        const user = auth.currentUser; // ✅ Get the logged-in user
+
+        if (!user) {
+            console.error("❌ No logged-in user.");
+            return;
+        }
+
         if (!name || !uid || capturedImages.length < 100) {
             setStatus("Ensure you capture 100 images before registering.");
             return;
@@ -77,7 +87,10 @@ const RegisterUser = () => {
         try {
             setLoading(true);
             setStatus("Saving user to Firebase...");
+
             const userRef = collection(db, "Attendee");
+
+            // 🔍 Check if UID already exists
             const q = query(userRef, where("uid", "==", uid));
             const existingDocs = await getDocs(q);
             if (!existingDocs.empty) {
@@ -85,7 +98,16 @@ const RegisterUser = () => {
                 setLoading(false);
                 return;
             }
-            await addDoc(userRef, { uid, name, registeredAt: new Date() });
+
+            // ✅ Save new attendee with `registeredBy` field
+            await addDoc(userRef, {
+                uid,
+                name,
+                registeredBy: user.uid, // ✅ Store UID of the user who added this attendee
+                registeredAt: new Date(),
+            });
+
+            console.log(`✅ Attendee ${name} added by user:`, user.uid);
 
             setStatus("Sending images to backend...");
             await axios.post(
@@ -94,17 +116,18 @@ const RegisterUser = () => {
                 { headers: { "Content-Type": "application/json" } }
             );
 
-            setStatus("User registered and trained successfully!");
+            setStatus("User registered successfully! Now assign them to a module.");
             setFormData({ name: "", uid: "" });
             setCapturedImages([]);
             setStep(1); // Reset for next registration
         } catch (error) {
-            setStatus("Failed to register user.");
+            setStatus("❌ Failed to register user.");
             console.error("Error:", error.response?.data || error.message);
         } finally {
             setLoading(false);
         }
     };
+
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);

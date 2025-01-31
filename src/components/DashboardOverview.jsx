@@ -3,12 +3,16 @@ import { db } from "../firebaseConfig";
 import { collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
 import Card from "../components/DashboardCard"; // Reusable card component
 import "../css/DashboardOverview.css";
+import { getAuth } from "firebase/auth";
 
 // Import images
 import PresentLogo from "../assets/PresentLogo.png";
 import AverageArrivalLogo from "../assets/ClockIcon.png";
 import LateArrivalsLogo from "../assets/WarningLogo.png";
 import OnTimeRateLogo from "../assets/OntimeRate.png";
+
+
+const auth = getAuth(); // ✅ Get Firebase Auth instance
 
 const DashboardOverview = () => {
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -23,24 +27,38 @@ const DashboardOverview = () => {
     const [onTimeRate, setOnTimeRate] = useState(0);
 
     useEffect(() => {
+        const fetchModules = async () => {
+            const user = auth.currentUser; // ✅ Get logged-in user
+            if (!user) {
+                console.error("❌ No logged-in user.");
+                return;
+            }
+
+            try {
+                const modulesRef = collection(db, "schedules");
+                const q = query(modulesRef, where("createdBy", "==", user.uid)); // ✅ Only fetch user's modules
+                const snapshot = await getDocs(q);
+
+                const moduleList = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    name: doc.data().module
+                }));
+
+                setModules(moduleList);
+                console.log("✅ User's Modules:", moduleList);
+            } catch (error) {
+                console.error("❌ Error fetching user’s modules:", error);
+            }
+        };
+
+        fetchModules();
+    }, [auth.currentUser]); // ✅ Fetch only when user logs in
+
+    useEffect(() => {
         const timer = setInterval(() => {
             setCurrentTime(new Date());
         }, 1000);
         return () => clearInterval(timer);
-    }, []);
-
-    useEffect(() => {
-        // Fetch available modules from Firebase
-        const fetchModules = async () => {
-            const modulesRef = collection(db, "schedules");
-            const snapshot = await getDocs(modulesRef);
-            const moduleList = snapshot.docs.map(doc => ({
-                id: doc.id,
-                name: doc.data().module
-            }));
-            setModules(moduleList);
-        };
-        fetchModules();
     }, []);
 
     useEffect(() => {
@@ -125,16 +143,20 @@ const DashboardOverview = () => {
                 <div className="modal-overlay">
                     <div className="modal">
                         <h2>Select a Module</h2>
-                        <ul>
-                            {modules.map((module) => (
-                                <li key={module.id} onClick={() => {
-                                    setSelectedModule(module.name);
-                                    setShowModal(false);
-                                }}>
-                                    {module.name}
-                                </li>
-                            ))}
-                        </ul>
+                        {modules.length > 0 ? (
+                            <ul>
+                                {modules.map((module) => (
+                                    <li key={module.id} onClick={() => {
+                                        setSelectedModule(module.name);
+                                        setShowModal(false);
+                                    }}>
+                                        {module.name}
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No modules found. Create a module first.</p>
+                        )}
                         <button className="close-button" onClick={() => setShowModal(false)}>Close</button>
                     </div>
                 </div>
