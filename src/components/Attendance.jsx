@@ -12,7 +12,7 @@ const Attendance = () => {
     const [user, setUser] = useState(null);
     const auth = getAuth();
 
-    // ✅ Step 1: Track logged-in user
+    // ✅ Track logged-in user
     useEffect(() => {
         const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {
@@ -27,7 +27,7 @@ const Attendance = () => {
         return () => unsubscribeAuth();
     }, []);
 
-    // ✅ Step 2: Fetch Attendance Data for ALL Users
+    // ✅ Fetch Attendance Data for ALL Users
     useEffect(() => {
         if (!user) {
             console.warn("⚠️ Waiting for user authentication...");
@@ -62,17 +62,26 @@ const Attendance = () => {
                     return;
                 }
 
-                // ✅ Extract date from Firestore timestamp
+                // ✅ Convert Firestore Timestamp to Nepal Time (UTC+5:45)
                 let dateRecorded = "Unknown Date";
                 let formattedTime = "Unknown Time";
 
                 if (record.timeRecorded?.seconds) {
-                    const timestamp = new Date(record.timeRecorded.seconds * 1000);
-                    dateRecorded = timestamp.toISOString().split("T")[0];
-                    formattedTime = timestamp.toLocaleString(); // ✅ Convert Firestore Timestamp
+                    const utcTimestamp = new Date(record.timeRecorded.seconds * 1000); // Convert Firestore timestamp (UTC)
+
+                    // ✅ Manually Adjust UTC Time to Nepal Time (UTC+5:45)
+                    const nepalTime = new Date(utcTimestamp.getTime() + (5 * 60 + 45) * 60 * 1000);
+
+                    // ✅ Extract Date & Time
+                    dateRecorded = nepalTime.toISOString().split("T")[0]; // Extract date
+                    formattedTime = nepalTime.toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true
+                    }); // ✅ Display in HH:MM AM/PM format
                 } else if (typeof record.timeRecorded === "string") {
                     dateRecorded = record.timeRecorded.split(" ")[0];
-                    formattedTime = record.timeRecorded;
+                    formattedTime = record.timeRecorded.split(" ")[1];
                 }
 
                 if (!moduleWiseData[record.module]) {
@@ -95,7 +104,7 @@ const Attendance = () => {
         });
 
         return () => unsubscribeFirestore();
-    }, [user]); // ✅ Fetch only when user is available
+    }, [user]);
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -103,7 +112,6 @@ const Attendance = () => {
 
     return (
         <div className={`attendance-container ${isSidebarOpen ? "sidebar-open" : ""}`}>
-            {/* ✅ Sidebar Overlay */}
             <DashboardSidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} className="sidebar-overlay" />
             <div className="main-content">
                 <Header toggleSidebar={toggleSidebar} />
@@ -131,35 +139,26 @@ const Attendance = () => {
                                                 </thead>
                                                 <tbody>
                                                 {attendanceData[moduleName]?.[date]?.map((entry, index) => {
-                                                    // ✅ Convert Firestore Timestamp
-                                                    let formattedTime = "Unknown Time";
                                                     let lateStatus = "On Time"; // Default status
 
+                                                    // ✅ Check if the user is late based on the schedule
+                                                    const scheduledTime = new Date();
+                                                    scheduledTime.setHours(9, 0, 0); // 🔹 Replace with actual scheduled time (e.g., 9:00 AM)
+
                                                     if (entry.timeRecorded?.seconds) {
-                                                        const timestamp = new Date(entry.timeRecorded.seconds * 1000);
-                                                        formattedTime = timestamp.toLocaleTimeString([], {
-                                                            hour: "2-digit",
-                                                            minute: "2-digit",
-                                                            hour12: true
-                                                        }); // ✅ Only display HH:MM AM/PM
+                                                        const utcTimestamp = new Date(entry.timeRecorded.seconds * 1000);
+                                                        const nepalTime = new Date(utcTimestamp.getTime() + (5 * 60 + 45) * 60 * 1000);
 
-                                                        // ✅ Check if the user is late based on the schedule
-                                                        const scheduledTime = new Date(timestamp);
-                                                        scheduledTime.setHours(9, 0, 0); // 🔹 Replace with actual scheduled time (e.g., 9:00 AM)
-
-                                                        if (timestamp > scheduledTime) {
-                                                            lateStatus = "Late"; // ✅ If the recorded time is after scheduled time, mark as "Late"
+                                                        if (nepalTime > scheduledTime) {
+                                                            lateStatus = "Late"; // ✅ Mark as "Late" if checked in after scheduled time
                                                         }
-                                                    } else if (typeof entry.timeRecorded === "string") {
-                                                        formattedTime = entry.timeRecorded.split(" ")[1]; // ✅ Extract only time part
                                                     }
 
                                                     return (
                                                         <tr key={entry.id}>
                                                             <td>{index + 1}</td>
                                                             <td>{entry.name}</td>
-                                                            <td>{formattedTime}</td>
-                                                            {/* ✅ Shows only HH:MM AM/PM */}
+                                                            <td>{entry.formattedTime}</td> {/* ✅ Shows time in correct local format */}
                                                             <td className={entry.status === "Present" ? "status-present" : "status-absent"}>
                                                                 {entry.status}
                                                             </td>
@@ -183,7 +182,6 @@ const Attendance = () => {
                 </div>
             </div>
 
-            {/* ✅ Transparent Footer Stays at Bottom */}
             <footer className="attendance-footer">
                 <p>
                     &copy; 2025 AttenAi | Developed By{' '}

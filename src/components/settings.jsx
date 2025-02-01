@@ -1,94 +1,88 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../firebaseConfig";
-import { doc, getDoc, updateDoc, collection, getDocs } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { getAuth, signOut } from "firebase/auth";
 import "../css/settings.css";
 import Header from "../components/clientHeader";
 import DashboardSidebar from "../components/DashboardSidebar";
 
 const Settings = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [organization, setOrganization] = useState({
-        name: "",
-        subscription: "",
-        renewalDate: "",
-        cameraMode: "local", // Default to local camera
+    const [user, setUser] = useState({
+        fullName: "",
+        contactNumber: "",
+        email: "",
+        organizationName: "",
+    });
+    const [cameraSettings, setCameraSettings] = useState({
+        cameraMode: "local",
+        apiKey: "",
         cctvApiUrl: "",
     });
-    const [modules, setModules] = useState([]);
-    const [moduleCameraAssignments, setModuleCameraAssignments] = useState({});
-    const [saving, setSaving] = useState(false);
+    const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+    const [editingUser, setEditingUser] = useState({});
+    const auth = getAuth();
 
     useEffect(() => {
-        const fetchSettings = async () => {
+        const fetchUserData = async () => {
             try {
-                const orgDoc = await getDoc(doc(db, "Organizations", "org_123")); // Replace with dynamic ID
-                if (orgDoc.exists()) {
-                    setOrganization(orgDoc.data());
+                const userDoc = await getDoc(doc(db, "Users", "NsnKRYP7bUN33Tqczkgy0I6QwXb2")); // Replace with dynamic ID
+                if (userDoc.exists()) {
+                    setUser(userDoc.data());
                 }
 
-                // Fetch modules
-                const modulesSnapshot = await getDocs(collection(db, "Modules"));
-                const modulesData = modulesSnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    name: doc.data().name,
-                    assignedCameraApi: doc.data().cameraApi || "Not Assigned",
-                }));
-                setModules(modulesData);
-
-                // Fetch camera API assignments
-                const assignments = {};
-                modulesData.forEach(module => {
-                    assignments[module.id] = module.assignedCameraApi;
-                });
-                setModuleCameraAssignments(assignments);
+                const cameraDoc = await getDoc(doc(db, "Settings", "camera_settings"));
+                if (cameraDoc.exists()) {
+                    setCameraSettings(cameraDoc.data());
+                }
             } catch (error) {
-                console.error("Error fetching settings:", error);
+                console.error("Error fetching user settings:", error);
             }
         };
 
-        fetchSettings();
+        fetchUserData();
     }, []);
 
-    const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
+    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+    const toggleEditPopup = () => {
+        setEditingUser(user);
+        setIsEditPopupOpen(!isEditPopupOpen);
+    };
+
+    const handleUserChange = (e) => {
+        setEditingUser({ ...editingUser, [e.target.name]: e.target.value });
     };
 
     const handleCameraChange = (e) => {
-        const newCameraMode = e.target.value;
-        setOrganization(prev => ({ ...prev, cameraMode: newCameraMode }));
+        setCameraSettings({ ...cameraSettings, cameraMode: e.target.value });
 
-        if (newCameraMode === "cctv") {
+        if (e.target.value === "cctv") {
             const newCctvUrl = prompt("Enter CCTV API URL:");
             if (newCctvUrl) {
-                setOrganization(prev => ({ ...prev, cctvApiUrl: newCctvUrl }));
+                setCameraSettings({ ...cameraSettings, cctvApiUrl: newCctvUrl });
             }
         }
     };
 
-    const handleModuleCameraChange = (moduleId, newApiUrl) => {
-        setModuleCameraAssignments(prev => ({
-            ...prev,
-            [moduleId]: newApiUrl,
-        }));
+    const saveUserInfo = async () => {
+        try {
+            await updateDoc(doc(db, "Users", "NsnKRYP7bUN33Tqczkgy0I6QwXb2"), editingUser);
+            setUser(editingUser);
+            setIsEditPopupOpen(false);
+            alert("User information updated successfully!");
+        } catch (error) {
+            console.error("Error updating user info:", error);
+            alert("Failed to update user info.");
+        }
     };
 
-    const saveSettings = async () => {
-        setSaving(true);
+    const handleLogout = async () => {
         try {
-            // Save organization settings
-            await updateDoc(doc(db, "Organizations", "org_123"), organization);
-
-            // Save camera assignments to modules
-            for (const [moduleId, cameraApi] of Object.entries(moduleCameraAssignments)) {
-                await updateDoc(doc(db, "Modules", moduleId), { cameraApi });
-            }
-
-            alert("Settings saved successfully!");
+            await signOut(auth);
+            alert("Successfully logged out.");
+            window.location.reload(); // Reload page after logout
         } catch (error) {
-            console.error("Error saving settings:", error);
-            alert("Failed to save settings.");
-        } finally {
-            setSaving(false);
+            console.error("Error logging out:", error);
         }
     };
 
@@ -101,83 +95,74 @@ const Settings = () => {
                 <div className="content">
                     <h2>Settings</h2>
 
-                    {/* 📌 Organization Details */}
-                    <div className="settings-section">
-                        <h3>Organization Information</h3>
-                        <p><strong>Name:</strong> {organization.name}</p>
-                        <p><strong>Subscription Plan:</strong> {organization.subscription}</p>
-                        <p><strong>Renewal Date:</strong> {organization.renewalDate}</p>
+                    {/* 📌 User Settings */}
+                    <div className="settings-section user-settings">
+                        <h3>User Settings</h3>
+                        <p><strong>Organization:</strong> {user.organizationName}</p>
+                        <p><strong>Account Holder:</strong> {user.fullName}</p>
+                        <p><strong>Contact:</strong> {user.contactNumber}</p>
+                        <p><strong>Email:</strong> {user.email}</p>
+                        <button className="edit-button" onClick={toggleEditPopup}>Edit</button>
                     </div>
 
                     {/* 📌 Camera Settings */}
                     <div className="settings-section">
                         <h3>Camera Settings</h3>
                         <label>Select Camera Source:</label>
-                        <select value={organization.cameraMode} onChange={handleCameraChange}>
+                        <select value={cameraSettings.cameraMode} onChange={handleCameraChange}>
                             <option value="local">Local Webcam</option>
                             <option value="cctv">CCTV API</option>
                         </select>
 
-                        {organization.cameraMode === "cctv" && (
-                            <div className="cctv-input">
-                                <label>Enter CCTV API URL:</label>
-                                <input
-                                    type="text"
-                                    placeholder="https://your-cctv-api.com/stream"
-                                    value={organization.cctvApiUrl}
-                                    onChange={(e) =>
-                                        setOrganization(prev => ({ ...prev, cctvApiUrl: e.target.value }))
-                                    }
-                                />
-                            </div>
-                        )}
+                        <div className="input-group">
+                            <label>API Key</label>
+                            <input
+                                type="text"
+                                placeholder="Enter API Key"
+                                value={cameraSettings.apiKey}
+                                onChange={(e) => setCameraSettings({ ...cameraSettings, apiKey: e.target.value })}
+                            />
+                        </div>
                     </div>
 
-                    {/* 📌 Assign Camera API to Modules */}
+                    {/* 📌 Contact Us */}
                     <div className="settings-section">
-                        <h3>Assign Camera API to Modules</h3>
-                        <table className="module-camera-table">
-                            <thead>
-                            <tr>
-                                <th>Module</th>
-                                <th>Assigned Camera API</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {modules.map(module => (
-                                <tr key={module.id}>
-                                    <td>{module.name}</td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            value={moduleCameraAssignments[module.id]}
-                                            onChange={(e) =>
-                                                handleModuleCameraChange(module.id, e.target.value)
-                                            }
-                                        />
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
+                        <h3>Contact Us</h3>
+                        <p>Email: <a href="mailto:support@attenai.com">support@attenai.com</a></p>
+                        <p>Phone: +977-9810392313</p>
                     </div>
 
-                    {/* 📌 Save Settings Button */}
-                    <button className="save-button" onClick={saveSettings} disabled={saving}>
-                        {saving ? "Saving..." : "Save Changes"}
-                    </button>
+                    {/* 📌 About Us */}
+                    <div className="settings-section">
+                        <h3>About Us</h3>
+                        <p>AttenAi is an advanced AI-based attendance management system designed to automate attendance tracking using facial recognition.</p>
+                    </div>
+
+                    {/* 📌 Logout Button */}
+                    <div className="settings-section logout-section">
+                        <button className="logout-button" onClick={handleLogout}>Logout</button>
+                    </div>
                 </div>
             </div>
 
-            {/* 📌 Settings Footer */}
-            <footer className="settings-footer">
-                <p>
-                    &copy; 2025 AttenAi | Developed By{' '}
-                    <a href="https://sachin.bio/" target="_blank" rel="noopener noreferrer">
-                        Sachin Khatri
-                    </a>
-                </p>
-            </footer>
+            {/* 📌 Edit User Info Popup with Blurred Background */}
+            {isEditPopupOpen && (
+                <div className="popup-overlay">
+                    <div className="popup">
+                        <h3>Edit User Information</h3>
+                        <div className="input-group">
+                            <label>Full Name</label>
+                            <input type="text" name="fullName" value={editingUser.fullName} onChange={handleUserChange} />
+                        </div>
+                        <div className="input-group">
+                            <label>Contact Number</label>
+                            <input type="text" name="contactNumber" value={editingUser.contactNumber} onChange={handleUserChange} />
+                        </div>
+                        <button className="save-button" onClick={saveUserInfo}>Save Changes</button>
+                        <button className="cancel-button" onClick={toggleEditPopup}>Cancel</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
