@@ -27,36 +27,53 @@ const Insights = () => {
         absent: 0
     });
 
-    // ✅ Fetch all available modules from Firestore
+    // ✅ Fetch all available modules from Firestore (Created by the User)
     useEffect(() => {
         const fetchModules = async () => {
-            const moduleRef = collection(db, "schedules"); // Assuming modules are stored in `schedules`
-            const moduleSnapshot = await getDocs(moduleRef);
-            const moduleList = moduleSnapshot.docs.map(doc => doc.data().module);
-            setModules(moduleList);
+            try {
+                const moduleRef = collection(db, "schedules");
+                const moduleSnapshot = await getDocs(moduleRef);
+                const moduleList = moduleSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    name: doc.data().module
+                }));
+                setModules(moduleList);
+            } catch (error) {
+                console.error("❌ Error fetching modules:", error);
+            }
         };
 
         fetchModules();
     }, []);
 
-    // ✅ Fetch attendance for the selected module
+    // ✅ Fetch attendance for the selected module (Real-Time Updates)
     useEffect(() => {
         if (!selectedModule) return;
+
+        console.log(`📡 Fetching attendance for module: ${selectedModule}`);
 
         const attendanceRef = collection(db, "AttendanceRecords");
         const q = query(attendanceRef, where("module", "==", selectedModule));
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
+            if (snapshot.empty) {
+                console.warn("⚠️ No attendance records found for this module.");
+                setAttendanceStats({ checkedIn: 0, late: 0, absent: 0 }); // ✅ Prevents old data from showing
+                return;
+            }
+
             let checkedInCount = 0;
             let lateCount = 0;
             let absentCount = 0;
 
             snapshot.forEach((doc) => {
                 const data = doc.data();
-                if (data.status === "Checked In") checkedInCount++;
+                if (data.status === "Checked In" || data.status === "Present") checkedInCount++;
                 else if (data.status === "Late") lateCount++;
                 else if (data.status === "Absent") absentCount++;
             });
+
+            console.log("✅ Attendance Stats Updated:", { checkedInCount, lateCount, absentCount });
 
             setAttendanceStats({
                 checkedIn: checkedInCount,
@@ -68,12 +85,14 @@ const Insights = () => {
         return () => unsubscribe(); // ✅ Unsubscribe on unmount
     }, [selectedModule]);
 
-    // ✅ Chart Data
+    // ✅ Chart Data (Ensure Data Always Renders)
     const chartData = {
         labels: ["Checked In", "Late", "Absent"],
         datasets: [
             {
-                data: [attendanceStats.checkedIn, attendanceStats.late, attendanceStats.absent],
+                data: attendanceStats.checkedIn || attendanceStats.late || attendanceStats.absent
+                    ? [attendanceStats.checkedIn, attendanceStats.late, attendanceStats.absent]
+                    : [1, 1, 1], // ✅ Prevents Chart.js from breaking if no data
                 backgroundColor: ["#4CAF50", "#FFC107", "#F44336"],
                 borderWidth: 2,
                 hoverOffset: 10
@@ -81,7 +100,7 @@ const Insights = () => {
         ],
     };
 
-    // ✅ Bar Chart Options for better visuals
+    // ✅ Bar Chart Options
     const barOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -115,9 +134,9 @@ const Insights = () => {
                     <label>Select Module:</label>
                     <select value={selectedModule} onChange={(e) => setSelectedModule(e.target.value)}>
                         <option value="">All Modules</option>
-                        {modules.map((module, index) => (
-                            <option key={index} value={module}>
-                                {module}
+                        {modules.map((module) => (
+                            <option key={module.id} value={module.name}>
+                                {module.name}
                             </option>
                         ))}
                     </select>

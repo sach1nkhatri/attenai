@@ -42,7 +42,7 @@ const CameraFeed = () => {
             }
         };
 
-        const interval = setInterval(captureAndSendFrame, 700);
+        const interval = setInterval(captureAndSendFrame, 1000);
         return () => clearInterval(interval);
     }, [cameraMode]);
 
