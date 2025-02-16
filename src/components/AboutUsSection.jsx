@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import '../css/aboutUsSection.css';
-import realtime from "../assets/rti.png";
-import secureandr from "../assets/sar.jpg";
-import attandance from "../assets/attendance.jpg";
+import realtime from "../assets/abouus1.png";
+import secureandr from "../assets/aboutus2.png";
+import attandance from "../assets/abus3.png";
 
 function AboutUs() {
     const [currentIndex, setCurrentIndex] = useState(0);

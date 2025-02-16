@@ -1,8 +1,8 @@
 import React from "react";
 import "../css/serviceSection.css"; // Import the CSS file
-import realtime from "../assets/rti.png";
-import secureandr from "../assets/sar.jpg";
-import attandance from "../assets/attendance.jpg";
+import realtime from "../assets/realtimein.png";
+import secureandr from "../assets/secureandrelaible.png";
+import attandance from "../assets/effortlessattendance.png";
 
 const MyServicesSection = () => {
     return (

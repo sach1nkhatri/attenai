@@ -1,41 +1,61 @@
-/* 📌 Make sure `.dashboard-grid` does not affect the footer */
+/* 📌 Default Grid Layout for Large Screens */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 2fr 1.5fr; /* CameraFeed on the left, RecentActivity on the right */
-    gap: 20px; /* Space between the components */
+    grid-template-columns: 2fr 1.5fr; /* ✅ Default: CameraFeed on left, RecentActivity on right */
+    gap: 20px;
     margin-top: 100px;
-    min-height: calc(100vh - 60px); /* Ensures grid takes up full height minus footer */
+    min-height: calc(100vh - 60px); /* ✅ Full height minus footer */
 }
 
-/* 📌 Ensure Footer is Full-Width & Stays at Bottom */
+/* 📌 Mobile Optimization (Stack Components) */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* ✅ Stack elements vertically */
+        gap: 15px; /* ✅ Reduce gap for better spacing */
+        margin-top: 80px;
+    }
+}
+
+/* 📌 Optimize CameraFeed & RecentActivity for Mobile */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* ✅ Single-column layout */
+        gap: 10px;
+        padding: 10px;
+    }
+
+    /* 📌 Ensure CameraFeed and RecentActivity take full width */
+    .camera-feed, .recent-activity {
+        width: 100%;
+        max-width: 100%; /* ✅ Prevents overflow */
+    }
+
+    /* 📌 Optimize Text Size & Padding for Mobile */
+    .dashboard-container h2 {
+        font-size: 18px; /* ✅ Reduce heading size */
+    }
+}
+
+/* 📌 Ensure Footer Stays at Bottom */
 .dash-footer {
     width: 100%;
-    position: relative; /* ✅ Moves with content */
+    position: relative;
     bottom: 0;
     left: 0;
-    background: rgba(0, 0, 0, 0); /* ✅ Semi-transparent black */
+    background: rgba(0, 0, 0, 0); /* ✅ Semi-transparent */
     color: #000000;
     text-align: center;
     padding: 15px 0;
-    z-index: 1000; /* ✅ Keeps it on top */
+    z-index: 1000;
 }
 
-/* 📌 Ensure the page expands fully and pushes footer down */
+/* 📌 Prevent Floating Footer */
 .dashboard-container {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* ✅ Ensures full page height */
+    min-height: 100vh;
 }
 
-/* 📌 Pushes content up to prevent footer from floating */
 .main-content {
     flex: 1;
-}
-
-/* 📌 Fix for Mobile View */
-@media (max-width: 768px) {
-    .dash-footer {
-        bottom: 0; /* ✅ Ensures correct position on smaller screens */
-        padding: 10px 0; /* ✅ Reduce padding for mobile */
-    }
 }

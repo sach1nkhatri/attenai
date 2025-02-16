@@ -1,6 +1,6 @@
-/* HomeSection.css: Updated for responsiveness */
+/* 📌 Hero Section with Slight Background Blur */
 .hero-section {
-    background-image: url(../assets/attenaifullimg.jpg);
+    background-image: url(../assets/welcomattenai.png);
     background-size: cover;
     background-position: center;
     height: 80vh;
@@ -13,15 +13,36 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: relative;
+    overflow: hidden; /* ✅ Prevents unwanted scrolling effects */
 }
 
+/* 📌 Blurred Background Overlay (Applied Outside the Content) */
+.hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(5px); /* ✅ Soft blur effect */
+    -webkit-backdrop-filter: blur(6px); /* ✅ Safari support */
+    z-index: 0;
+}
+
+/* 📌 Hero Content (No Blur - Keeps Text Clear) */
 .hero-content {
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #ffffff;
-    padding: 20px;
+    position: relative;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.3); /* ✅ Light translucent background */
+    padding: 20px 40px;
     border-radius: 10px;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* 📌 Text Styling */
 .hero-content h1 {
     font-size: 48px;
     margin-bottom: 10px;
@@ -31,12 +52,22 @@
     font-size: 20px;
 }
 
+/* 📌 Mobile Responsive Adjustments */
 @media (max-width: 768px) {
+    .hero-content {
+        padding: 15px 25px;
+    }
+
     .hero-content h1 {
         font-size: 32px;
     }
 
     .hero-content p {
         font-size: 16px;
+    }
+
+    .hero-section::before {
+        backdrop-filter: blur(4px); /* ✅ Slightly less blur for mobile */
+        -webkit-backdrop-filter: blur(4px);
     }
 }

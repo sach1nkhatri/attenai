@@ -1,24 +1,26 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { db } from "../firebaseConfig";
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
-import "../css/RegisterUser.css"; // ✅ Import CSS for styling
+import { collection, getDocs } from "firebase/firestore";
+import "../css/RegisterUser.css";
 import Header from "../components/clientHeader";
 import DashboardSidebar from "../components/DashboardSidebar";
 import { getAuth } from "firebase/auth";
 
+const auth = getAuth();
 
-const auth = getAuth(); // ✅ Get the logged-in user
 const RegisterUser = () => {
     const [formData, setFormData] = useState({ name: "", uid: "" });
     const [status, setStatus] = useState("Start capturing images.");
     const [loading, setLoading] = useState(false);
+    const [capturing, setCapturing] = useState(false);
+    const [capturedImages, setCapturedImages] = useState([]);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isRetraining, setIsRetraining] = useState(false);
+    const [allUsers, setAllUsers] = useState([]);
+    const [selectedUser, setSelectedUser] = useState("");
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
-    const [capturedImages, setCapturedImages] = useState([]);
-    const [capturing, setCapturing] = useState(false);
-    const [step, setStep] = useState(1); // 1 = Close, 2 = Far
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     useEffect(() => {
         const startCamera = async () => {
@@ -35,7 +37,6 @@ const RegisterUser = () => {
         };
     }, []);
 
-    // Auto-capture images when a face is detected
     useEffect(() => {
         if (!capturing) return;
 
@@ -47,7 +48,7 @@ const RegisterUser = () => {
                 setCapturing(false);
                 setStatus("100 images captured. Ready to send.");
             }
-        }, 300); // Capture every 300ms
+        }, 300);
 
         return () => clearInterval(interval);
     }, [capturing, capturedImages]);
@@ -61,18 +62,12 @@ const RegisterUser = () => {
             const image = canvas.toDataURL("image/jpeg");
 
             setCapturedImages((prev) => [...prev, image]);
-
-            // Switch message when reaching 50 images
-            if (capturedImages.length === 49) {
-                setStatus("Move further away for the next 50 images.");
-                setStep(2);
-            }
         }
     };
 
     const handleRegister = async () => {
         const { name, uid } = formData;
-        const user = auth.currentUser; // ✅ Get the logged-in user
+        const user = auth.currentUser;
 
         if (!user) {
             console.error("❌ No logged-in user.");
@@ -90,26 +85,14 @@ const RegisterUser = () => {
 
             const userRef = collection(db, "Attendee");
 
-            // 🔍 Check if UID already exists
-            const q = query(userRef, where("uid", "==", uid));
-            const existingDocs = await getDocs(q);
-            if (!existingDocs.empty) {
+            const existingDocs = await getDocs(userRef);
+            const userExists = existingDocs.docs.some(doc => doc.data().uid === uid);
+            if (userExists) {
                 setStatus("UID already exists. Use a different UID.");
                 setLoading(false);
                 return;
             }
 
-            // ✅ Save new attendee with `registeredBy` field
-            await addDoc(userRef, {
-                uid,
-                name,
-                registeredBy: user.uid, // ✅ Store UID of the user who added this attendee
-                registeredAt: new Date(),
-            });
-
-            console.log(`✅ Attendee ${name} added by user:`, user.uid);
-
-            setStatus("Sending images to backend...");
             await axios.post(
                 "http://127.0.0.1:5000/register",
                 { id: uid, name, images: capturedImages },
@@ -119,7 +102,6 @@ const RegisterUser = () => {
             setStatus("User registered successfully! Now assign them to a module.");
             setFormData({ name: "", uid: "" });
             setCapturedImages([]);
-            setStep(1); // Reset for next registration
         } catch (error) {
             setStatus("❌ Failed to register user.");
             console.error("Error:", error.response?.data || error.message);
@@ -128,16 +110,47 @@ const RegisterUser = () => {
         }
     };
 
+    useEffect(() => {
+        const fetchUsers = async () => {
+            const userRef = collection(db, "Attendee");
+            const userDocs = await getDocs(userRef);
+            setAllUsers(userDocs.docs.map(doc => doc.data()));
+        };
+        fetchUsers();
+    }, []);
 
-    const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
+    const handleRetrain = async () => {
+        if (!selectedUser || capturedImages.length < 100) {
+            setStatus("Select a user and capture 100 images.");
+            return;
+        }
+
+        try {
+            setLoading(true);
+            setStatus("Retraining user...");
+
+            await axios.post(
+                "http://127.0.0.1:5000/register/retrain",
+                { uid: selectedUser, images: capturedImages },
+                { headers: { "Content-Type": "application/json" } }
+            );
+
+            setStatus("User retrained successfully!");
+            setCapturedImages([]);
+            setIsRetraining(false);
+        } catch (error) {
+            setStatus("❌ Retraining failed.");
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className="register-container">
-            <DashboardSidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+            <DashboardSidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
             <div className={`main-content ${isSidebarOpen ? "sidebar-open" : ""}`}>
-                <Header toggleSidebar={toggleSidebar} />
+                <Header toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
                 <div className="content">
                     <h2>Register User</h2>
 
@@ -171,11 +184,32 @@ const RegisterUser = () => {
                         <button onClick={handleRegister} disabled={loading || capturedImages.length < 100}>
                             {loading ? "Registering..." : "Register & Train"}
                         </button>
+                        <button onClick={() => setIsRetraining(true)}>Retrain User</button>
                     </div>
 
-                    <p className={`status-message ${step === 1 ? "blue-text" : "red-text"}`}>
-                        {status}
-                    </p>
+                    {isRetraining && (
+                        <div className="modal-overlay">
+                            <div className="modal-content">
+                                <button className="close-btn" onClick={() => setIsRetraining(false)}>✖</button>
+                                <h3>Select User for Retraining</h3>
+                                <select value={selectedUser} onChange={(e) => setSelectedUser(e.target.value)}>
+                                    <option value="">Choose a UID</option>
+                                    {allUsers.map((user) => (
+                                        <option key={user.uid} value={user.uid}>{user.name} (UID: {user.uid})</option>
+                                    ))}
+                                </select>
+
+                                <button onClick={() => setCapturing(true)} disabled={capturing || loading}>
+                                    {capturing ? "Capturing Images..." : "Start Capturing"}
+                                </button>
+                                <button onClick={handleRetrain} disabled={loading || capturedImages.length < 100}>
+                                    {loading ? "Retraining..." : "Retrain & Save"}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    <p className="status-message">{status}</p>
 
                     <h3>Captured Images ({capturedImages.length}/100)</h3>
                     <div className="image-grid">
@@ -185,16 +219,6 @@ const RegisterUser = () => {
                     </div>
                 </div>
             </div>
-
-            {/* ✅ Register Footer */}
-            <footer className="register-footer">
-                <p>
-                    &copy; 2025 AttenAi | Developed By{' '}
-                    <a href="https://sachin.bio/" target="_blank" rel="noopener noreferrer">
-                        Sachin Khatri
-                    </a>
-                </p>
-            </footer>
         </div>
     );
 };
