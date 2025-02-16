@@ -43,11 +43,7 @@ const Settings = () => {
         fetchUserData();
     }, []);
 
-    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-    const toggleEditPopup = () => {
-        setEditingUser(user);
-        setIsEditPopupOpen(!isEditPopupOpen);
-    };
+
 
     const handleUserChange = (e) => {
         setEditingUser({ ...editingUser, [e.target.name]: e.target.value });
@@ -86,12 +82,18 @@ const Settings = () => {
         }
     };
 
+    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+    const toggleEditPopup = () => {
+        setEditingUser(user);
+        setIsEditPopupOpen(!isEditPopupOpen);
+    };
+
     return (
         <div className="settings-container">
+            {/* ✅ Sidebar is correctly positioned */}
             <DashboardSidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
             <div className={`main-content ${isSidebarOpen ? "sidebar-open" : ""}`}>
                 <Header toggleSidebar={toggleSidebar} />
-
                 <div className="content">
                     <h2>Settings</h2>
 
