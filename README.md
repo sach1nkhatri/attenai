@@ -1,105 +1,99 @@
-⚖️ LawyerUp AI — Intelligent Legal Assistant for Nepal
-A civic-tech platform leveraging AI and web APIs to make Nepalese legal knowledge, documents, and professionals accessible for all.
+# AttenAi - React FrontendAdd commentMore actions
 
-🧠 Project Summary
-LawyerUp AI is a smart, mobile-first legal platform that empowers users with:
+## Overview
+AttenAi is a web-based attendance monitoring system that integrates face recognition technology for automated attendance tracking. This React frontend interacts with a Flask-based backend and Firebase for authentication and data storage.
 
-Instant legal Q&A via chatbot
+## Features
+- User authentication (Login/Signup)
+- Module and schedule management
+- Real-time face recognition for attendance
+- Attendance logging and insights dashboard
+- Live video feed for recognition
+- Recent activity tracking
 
-Lawyer discovery and appointment booking
+## Technologies Used
+- **Frontend**: React, Firebase
+- **Backend**: Flask (Python)
+- **Database**: Firebase Firestore
+- **State Management**: React Hooks
+- **Styling**: CSS
 
-Access to Nepalese Constitution and major legal codes
+## Installation
+### Prerequisites
+Ensure you have the following installed:
+- Node.js (v16 or later)
+- npm or yarn
+- Firebase project setup with Firestore
 
-Tiered role-based access for free and paid users
+### Steps
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-repo/attenai.git
+   cd attenai
+   ```
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+3. Set up Firebase:
+   - Create a `.env` file and add Firebase credentials.
+   ```env
+   REACT_APP_FIREBASE_API_KEY=your_api_key
+   REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
+   REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+   REACT_APP_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+   REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   REACT_APP_FIREBASE_APP_ID=your_app_id
+   ```
+4. Start the development server:
+   ```sh
+   npm start
+   ```
 
-Legal news, searchable PDFs, and interpretation tools
+## Project Structure
+```
+attenai/
+│── src/
+│   ├── components/         # Reusable UI components
+│   ├── pages/              # Page-level components
+│   ├── hooks/              # Custom React hooks
+│   ├── firebaseConfig.js   # Firebase configuration
+│   ├── App.js              # Main application file
+│   ├── index.js            # Entry point
+│── public/                 # Static assets
+│── package.json            # Dependencies and scripts
+│── .env                    # Environment variables
+```
 
-Built for students, citizens, lawyers, and researchers.
+## Key Modules
+- **Login & Authentication** (`Login.jsx`): Handles user authentication via Firebase.
+- **Attendance Tracking** (`Attendance.jsx`): Fetches and displays attendance records.
+- **Module Management** (`AddSchedules.jsx`, `Moduleinfo.jsx`): Allows adding and managing schedules.
+- **Live Camera Feed** (`CameraFeed.jsx`): Streams video for real-time face recognition.
+- **Dashboard** (`DashboardOverview.jsx`): Provides an overview of attendance insights.
 
-🎯 Project Objectives
-✅ Provide AI-powered answers to Nepalese legal queries
+## API Endpoints
+This frontend interacts with a Flask backend, which exposes the following endpoints:
+- `POST /register`: Register new users with face data.
+- `POST /recognize`: Recognize users from the video feed.
+- `GET /video/live`: Stream live video feed with face detection.
 
-📚 Offer categorized access to national codes: Civil, Criminal, Land, Tax, Company Acts
+## Deployment
+To deploy the frontend using Firebase Hosting:
+```sh
+npm run build
+firebase deploy
+```
+Ensure Firebase CLI is configured for your project.
 
-👩‍⚖️ Help users find and book verified legal professionals
+## Contribution
+Feel free to fork this repository, make improvements, and submit a pull request!
 
-🧑‍🎓 Support research, legal education, and documentation
+## License
+MIT License
 
-🌐 Build a scalable, multilingual legal assistant platform
 
-🏗️ System Architecture
-Users: Free, Basic, Premium, and Lawyer tiers
 
-Resources: News posts, lawyers, legal documents, and chat logs
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-Auth: JWT-secured login, session-based routing
-
-Monetization: Tiered services (chat limits, appointments, support access)
-
-🛠️ Technology Stack
-Layer	Stack Used
-Frontend	React (Web), Flutter (Mobile)
-Backend	Flask (Python API)
-AI/NLP	Gemma LLM, SentenceTransformers
-Search	FAISS for vector-based document retrieval
-Database	MongoDB
-
-🚀 Key Features
-🤖 AI Chatbot trained on Nepalese law
-
-📄 Law Document Library with searchable PDFs
-
-👨‍⚖️ Lawyer Booking System with filters (location, expertise, rating)
-
-📰 Legal News Feed from verified sources
-
-👍👎 Like/Dislike & Comments (1 action per user)
-
-🧩 Role-based Access Control (Free, Basic, Premium, Lawyer)
-
-📎 PDF Upload & Interpretation (planned)
-
-🌐 Multi-language Support (future scope)
-
-🧪 Setup & Deployment (Web)
-bash
-Copy
-Edit
-# Clone & enter project
-git clone https://github.com/sachin/lawyerup-web
-cd lawyerup-web
-
-# Install dependencies
-npm install
-
-# Environment config
-echo "REACT_APP_API_URL=http://localhost:5000/api/" > .env
-
-# Start dev server
-npm start
-🔐 Auth Flow
-JWT stored in localStorage as lawyerup_token
-
-Logged-in user info stored as lawyerup_user
-
-Protected API routes use Authorization: Bearer <token> header
-
-📚 References
-Constitution of Nepal (2015)
-
-Nepal Law Commission (legal codes, acts)
-
-OpenAI: SentenceTransformers
-
-Google AI: Gemma LLM
-
-Facebook AI: FAISS
-
-Figma, MongoDB, Flask
-
-📜 License & Copyright
-© 2025 Sachin Khatri — All rights reserved.
-
-This project was developed as part of a final year Web API Development module (ST6003CEM) at Softwarica College of IT and E-Commerce / Coventry University.
-
-This code and design are not to be reproduced, modified, or distributed without explicit written permission.
+To learn React, check out the [React documentation](https://reactjs.org/).
