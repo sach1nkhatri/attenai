@@ -1,4 +1,4 @@
-# AttenAi - React FrontendAdd commentMore actions
+# AttenAi - React Frontend
 
 ## Overview
 AttenAi is a web-based attendance monitoring system that integrates face recognition technology for automated attendance tracking. This React frontend interacts with a Flask-based backend and Firebase for authentication and data storage.
