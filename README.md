@@ -92,6 +92,7 @@ Feel free to fork this repository, make improvements, and submit a pull request!
 ## License
 MIT License
 
+##Sachin khatri https://sachin.ink
 
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
