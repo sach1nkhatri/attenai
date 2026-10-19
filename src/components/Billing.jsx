@@ -16,7 +16,7 @@ const BillingSection = () => {
                 <div className="grid-two-columns">
                     {/* Personal Details Section */}
                     <div className="left-section">
-                        <h3>Personal Details</h3>
+                        <h3>Personal Details area for personal details</h3>
                         <div className="input-group">
                             <label htmlFor="fullName">Full Name</label>
                             <input type="text" id="fullName" name="fullName" placeholder="Sir Sachin Khatri" required />
@@ -67,7 +67,7 @@ const BillingSection = () => {
                     </div>
                 </div>
 
-                <button type="submit" className="checkout-button">Confirm and Subscribe</button>
+                <button type="submit" className="checkout-button">Confirm and Subscribe|| buyer remose is not accepeted </button>
             </form>
         </div>
     );
